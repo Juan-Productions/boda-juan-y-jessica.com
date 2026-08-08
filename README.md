@@ -32,8 +32,23 @@ y entra a `http://localhost:5173`.
 
 - **Lista de invitados y hoja de confirmación**: dentro de `index.html`, busca el bloque `<script type="text/x-dc">` al final del archivo. Ahí están `GUEST_LIST` (familias y cupos) y `SHEET_ENDPOINT` (URL del Web App de Google Apps Script que recibe las confirmaciones).
 - **Fecha de la boda**: la constante `target` dentro de `renderVals()` en ese mismo script (`new Date(2026, 9, 24, 15, 30, 0)`).
-- **Fotos**: los elementos `<image-slot>` en el cuerpo del HTML son marcadores de imagen editables.
+- **Foto de portada** (`hero-field`, la imagen grande de arriba): es un `<image-slot>`, un componente que solo se puede rellenar por drag&drop dentro del editor de Claude — **no funciona en el sitio ya publicado**. Para ponerle una foto real hay que reemplazar ese `<image-slot>` por un `<img src="assets/photos/...">` a mano (avisame y te lo hago).
+- **Galería / carrusel**: son `<img>` normales, sí funcionan en cualquier hosting. Instrucciones en [assets/photos/README.md](assets/photos/README.md) — básicamente: subís los archivos con el nombre que pide ese archivo y listo.
 - **Textos y estilos**: son HTML/CSS planos dentro del mismo `index.html`.
+
+## Galería con carrusel
+
+La sección "Galería" recorre automáticamente las fotos de `GALLERY_PHOTOS`
+(definidas cerca del final de `index.html`, junto a `GUEST_LIST`) cada
+`GALLERY_INTERVAL_MS` (4.5s por defecto). Tocar/cliquear una foto la abre en
+grande sobre un fondo difuminado (lightbox); se cierra con la X, tocando
+afuera, o con Escape.
+
+Las fotos llevan `draggable="false"`, no se pueden seleccionar y el clic
+derecho está bloqueado sobre ellas — son trabas básicas contra la descarga
+casual, **no protección real**: cualquiera puede sacar una captura de
+pantalla o abrir las herramientas de desarrollador del navegador. No subas
+fotos que no quieras que alguien pueda llegar a guardar de esa forma.
 
 ## Efecto de scroll (reveal on scroll)
 

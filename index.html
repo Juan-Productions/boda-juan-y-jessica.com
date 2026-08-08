@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <script>
 (function () {
-  var BUILD_VERSION = "2026-08-08.3";
+  var BUILD_VERSION = "2026-08-08.4";
   try {
     if (sessionStorage.getItem('dc_reloaded_for_version')) return;
     fetch('version.json?_=' + Date.now(), { cache: 'no-store' })
@@ -23,16 +23,16 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="build-version" content="2026-08-08.3">
+<meta name="build-version" content="2026-08-08.4">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Juan Daniel &amp; Jessica — Invitación de boda</title>
 <script>
   window.__resources = {
-    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-08-08.3",
-    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-08-08.3"
+    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-08-08.4",
+    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-08-08.4"
   };
 </script>
-<script src="assets/vendor/dc-runtime.js?v=2026-08-08.3"></script>
+<script src="assets/vendor/dc-runtime.js?v=2026-08-08.4"></script>
 </head>
 <body>
 <x-dc>
@@ -317,7 +317,7 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 </style>
-<script src="assets/vendor/image-slot.js?v=2026-08-08.3"></script>
+<script src="assets/vendor/image-slot.js?v=2026-08-08.4"></script>
 <style>
   body{margin:0;background:#f3f2f2;color:#201f1d;font-family:'Lora',serif;-webkit-font-smoothing:antialiased}
   a{color:#7d5411;text-underline-offset:3px}
@@ -478,6 +478,99 @@
     .cover-screen { animation: none; }
     .cover-monogram { animation: none; }
   }
+
+  .carousel-wrap {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(182,130,53,0.08);
+    box-shadow: 0 10px 32px rgba(32,31,29,0.14);
+  }
+  .carousel-slide {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    transition: opacity 1s ease;
+  }
+  .carousel-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .carousel-img, .lightbox-img {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .carousel-dots button {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: #b68235;
+    cursor: pointer;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+  }
+  .carousel-dots button:hover {
+    transform: scale(1.3);
+  }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s ease;
+  }
+  .lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(32,31,29,0.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .lightbox-img {
+    position: relative;
+    max-width: 90vw;
+    max-height: 85vh;
+    border-radius: 6px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    object-fit: contain;
+    transition: transform 0.4s cubic-bezier(.22,.61,.36,1);
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.4);
+    background: rgba(0,0,0,0.3);
+    color: #fff;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .carousel-slide, .lightbox, .lightbox-img { transition: none; }
+  }
 </style>
 
 </helmet>
@@ -623,10 +716,27 @@
     <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px">Formal</div>
   </div>
 
-  <div class="reveal" style="position:relative;width:100%;height:260px;overflow:hidden;margin-bottom:56px">
-    <div style="position:absolute;inset:0;padding:14px;box-sizing:border-box">
-      <image-slot id="field-detail" shape="rect" placeholder="Foto: paisaje del campo" style="width:100%;height:100%;filter:sepia(0.22) saturate(0.82) contrast(1.05)"></image-slot>
+  <div class="reveal" style="padding:0 32px 56px">
+    <span class="eyebrow">Momentos</span>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;text-align:center;margin:0 0 24px">Galería</h2>
+    <div class="carousel-wrap">
+      <sc-for list="{{ gallerySlides }}" as="p" hint-placeholder-count="3">
+        <div class="carousel-slide" sc-camel-on-click="{{ p.open }}" style="opacity:{{ p.opacity }};z-index:{{ p.z }}">
+          <img class="carousel-img" src="{{ p.src }}" alt="{{ p.alt }}" draggable="false">
+        </div>
+      </sc-for>
     </div>
+    <div class="carousel-dots">
+      <sc-for list="{{ galleryDots }}" as="d" hint-placeholder-count="3">
+        <button sc-camel-on-click="{{ d.goTo }}" aria-label="Ver foto" style="opacity:{{ d.opacity }}"></button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div class="lightbox" style="opacity:{{ lightboxOpacity }};pointer-events:{{ lightboxPointer }}" aria-hidden="{{ lightboxAriaHidden }}">
+    <div class="lightbox-backdrop" sc-camel-on-click="{{ closeLightbox }}"></div>
+    <button class="lightbox-close" sc-camel-on-click="{{ closeLightbox }}" aria-label="Cerrar">&times;</button>
+    <img class="lightbox-img" src="{{ lightboxSrc }}" alt="{{ lightboxAlt }}" draggable="false" style="transform:scale({{ lightboxScale }})">
   </div>
 
   <div class="divider-ornament" style="margin:0 32px 48px"><span></span></div>
@@ -736,6 +846,17 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script="">
+// Fotos de la galería: poné tus archivos en assets/photos/ con estos
+// nombres (o cambiá las rutas acá). Agregar/quitar filas agrega/quita
+// fotos del carrusel automáticamente.
+var GALLERY_PHOTOS = [
+  { src: "./assets/photos/galeria-1.jpg", alt: "Foto de la pareja 1" },
+  { src: "./assets/photos/galeria-2.jpg", alt: "Foto de la pareja 2" },
+  { src: "./assets/photos/galeria-3.jpg", alt: "Foto de la pareja 3" },
+  { src: "./assets/photos/galeria-4.jpg", alt: "Foto de la pareja 4" }
+];
+var GALLERY_INTERVAL_MS = 4500;
+
 var GUEST_LIST = [
   { familia: "Familia Ruz Pérez", titular: "Andrés Ruz", cupos: 4 },
   { familia: "Familia Gómez Salazar", titular: "Laura Gómez", cupos: 2 },
@@ -754,25 +875,58 @@ function normalize(s) {
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { step: "search", query: "", searchError: "", family: null, members: [], matches: [], message: "", now: Date.now(), musicOn: false, audioReady: false, opened: false };
+    this.state = { step: "search", query: "", searchError: "", family: null, members: [], matches: [], message: "", now: Date.now(), musicOn: false, audioReady: false, opened: false, carouselIndex: 0, lightboxIndex: null };
   }
 
   componentDidMount() {
     var self = this;
     this.timer = setInterval(function () { self.setState({ now: Date.now() }); }, 1000);
-    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-08-08.3");
+    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-08-08.4");
     this.audio.loop = true;
     this.audio.volume = 0.5;
     this.audio.addEventListener("error", function () { self.setState({ audioReady: false, musicOn: false }); });
     this.audio.addEventListener("canplay", function () { self.setState({ audioReady: true }); });
     this.audio.load();
     document.documentElement.style.overflow = "hidden";
+
+    this.galleryTimer = setInterval(function () {
+      if (self.state.lightboxIndex === null) {
+        self.setState({ carouselIndex: (self.state.carouselIndex + 1) % GALLERY_PHOTOS.length });
+      }
+    }, GALLERY_INTERVAL_MS);
+
+    this.onKeyDown = function (e) {
+      if (e.key === "Escape" && self.state.lightboxIndex !== null) self.closeLightbox();
+    };
+    document.addEventListener("keydown", this.onKeyDown);
+
+    // Deterrente básico contra guardar las fotos (no es infalible: un
+    // screenshot siempre funciona, pero evita el "guardar imagen" casual).
+    this.onContextMenu = function (e) {
+      if (e.target.closest && e.target.closest(".carousel-img, .lightbox-img")) {
+        e.preventDefault();
+      }
+    };
+    document.addEventListener("contextmenu", this.onContextMenu);
   }
 
   componentWillUnmount() {
     clearInterval(this.timer);
+    clearInterval(this.galleryTimer);
     if (this.audio) this.audio.pause();
     document.documentElement.style.overflow = "";
+    document.removeEventListener("keydown", this.onKeyDown);
+    document.removeEventListener("contextmenu", this.onContextMenu);
+  }
+
+  openLightbox(i) {
+    document.documentElement.style.overflow = "hidden";
+    this.setState({ lightboxIndex: i });
+  }
+
+  closeLightbox() {
+    document.documentElement.style.overflow = "";
+    this.setState({ lightboxIndex: null });
   }
 
   openInvitation() {
@@ -831,6 +985,28 @@ class Component extends DCLogic {
       coverPointer: this.state.opened ? "none" : "auto",
       coverAriaHidden: this.state.opened ? "true" : "false",
       openInvitation: function () { self.openInvitation(); },
+      gallerySlides: GALLERY_PHOTOS.map(function (p, i) {
+        return {
+          src: p.src,
+          alt: p.alt,
+          opacity: i === self.state.carouselIndex ? "1" : "0",
+          z: i === self.state.carouselIndex ? "2" : "1",
+          open: function () { self.openLightbox(i); }
+        };
+      }),
+      galleryDots: GALLERY_PHOTOS.map(function (p, i) {
+        return {
+          opacity: i === self.state.carouselIndex ? "1" : "0.35",
+          goTo: function () { self.setState({ carouselIndex: i }); }
+        };
+      }),
+      lightboxOpacity: this.state.lightboxIndex !== null ? "1" : "0",
+      lightboxPointer: this.state.lightboxIndex !== null ? "auto" : "none",
+      lightboxAriaHidden: this.state.lightboxIndex !== null ? "false" : "true",
+      lightboxScale: this.state.lightboxIndex !== null ? "1" : "0.9",
+      lightboxSrc: this.state.lightboxIndex !== null ? GALLERY_PHOTOS[this.state.lightboxIndex].src : "",
+      lightboxAlt: this.state.lightboxIndex !== null ? GALLERY_PHOTOS[this.state.lightboxIndex].alt : "",
+      closeLightbox: function () { self.closeLightbox(); },
       days: String(Math.floor(diff / 86400000)),
       hours: pad(Math.floor(diff / 3600000) % 24),
       minutes: pad(Math.floor(diff / 60000) % 60),
