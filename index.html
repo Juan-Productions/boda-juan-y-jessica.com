@@ -319,6 +319,94 @@
   @media (prefers-reduced-motion: reduce) {
     .reveal { transition: none; opacity: 1; transform: none; }
   }
+
+  .premium-card {
+    border: 1px solid rgba(182,130,53,0.35);
+    border-radius: 8px;
+    background: #faf9f6;
+    box-shadow: 0 4px 20px rgba(32,31,29,0.06), 0 1px 3px rgba(32,31,29,0.05);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+  }
+  .premium-card:hover {
+    box-shadow: 0 10px 28px rgba(32,31,29,0.1), 0 2px 6px rgba(32,31,29,0.06);
+    transform: translateY(-2px);
+  }
+
+  .icon-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgba(182,130,53,0.1);
+    margin: 0 auto 14px;
+  }
+
+  .divider-ornament {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .divider-ornament::before,
+  .divider-ornament::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(32,31,29,0.16);
+  }
+  .divider-ornament span {
+    flex: none;
+    width: 6px;
+    height: 6px;
+    background: #b68235;
+    transform: rotate(45deg);
+  }
+
+  .monogram {
+    width: 84px;
+    height: 84px;
+    margin: -42px auto 0;
+    border-radius: 50%;
+    border: 1px solid #b68235;
+    background: #faf9f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 5;
+    box-shadow: 0 6px 24px rgba(32,31,29,0.14);
+  }
+  .monogram span {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: 0.02em;
+    color: #7d5411;
+  }
+
+  .eyebrow {
+    display: block;
+    text-align: center;
+    font-family: 'Lora', serif;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b68235;
+    margin-bottom: 10px;
+  }
+
+  .btn {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  }
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(182,130,53,0.22);
+  }
+  .btn-solid-hover:hover {
+    background: #b68235 !important;
+    color: #faf9f6 !important;
+  }
 </style>
 
 </helmet>
@@ -326,7 +414,7 @@
 <div style="max-width:900px;margin:0 auto;background:#f3f2f2">
 
   <sc-if value="{{ musicAvailable }}" hint-placeholder-val="{{ false }}">
-    <button sc-camel-on-click="{{ toggleMusic }}" title="{{ musicLabel }}" aria-label="{{ musicLabel }}" style="position:fixed;top:18px;right:18px;z-index:20;width:44px;height:44px;border-radius:50%;cursor:pointer;background:rgba(243,242,242,0.9);border:1px solid #b68235;color:#7d5411;display:flex;align-items:center;justify-content:center">
+    <button class="btn" sc-camel-on-click="{{ toggleMusic }}" title="{{ musicLabel }}" aria-label="{{ musicLabel }}" style="position:fixed;top:18px;right:18px;z-index:20;width:44px;height:44px;border-radius:50%;cursor:pointer;background:rgba(243,242,242,0.9);border:1px solid #b68235;color:#7d5411;display:flex;align-items:center;justify-content:center">
       <sc-if value="{{ musicOn }}" hint-placeholder-val="{{ true }}">
         <svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path>
@@ -355,24 +443,28 @@
     </div>
   </div>
 
+  <div class="monogram"><span>J&amp;J</span></div>
+
   <div class="reveal" style="padding:56px 32px 8px;text-align:center">
     <div style="font-family:'Lora',serif;font-style:italic;font-size:17px;line-height:1.7;max-width:560px;margin:0 auto;color:#201f1d">
       Con alegría y gratitud a Dios, junto a nuestras familias, queremos invitarte a celebrar el día en que uniremos nuestras vidas frente a Él.
     </div>
   </div>
 
-  <div style="height:1px;background:rgba(32,31,29,0.16);margin:40px 32px"></div>
+  <div class="divider-ornament" style="margin:40px 32px"><span></span></div>
 
   <div class="reveal" style="padding:8px 32px 40px;text-align:center">
-    <svg width="22" height="22" sc-camel-view-box="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto 16px">
-      <path d="M8 2v4"></path><path d="M16 2v4"></path>
-      <rect width="18" height="18" x="3" y="4" rx="2"></rect>
-      <path d="M3 10h18"></path>
-    </svg>
+    <div class="icon-badge">
+      <svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 2v4"></path><path d="M16 2v4"></path>
+        <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+        <path d="M3 10h18"></path>
+      </svg>
+    </div>
     <div style="font-variant-numeric:tabular-nums;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:64px;line-height:1;color:#7d5411">24</div>
     <div style="font-family:'Lora',serif;font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:#201f1d;opacity:0.7;margin-top:6px">Octubre · 2026</div>
     <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;margin-top:18px;color:#201f1d">Bremen</div>
-    <a href="{{ mapUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;margin-top:18px;text-decoration:none;cursor:pointer;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:15px;color:#7d5411;background:transparent;border:1px solid #b68235;padding:10px 18px;border-radius:4px">
+    <a href="{{ mapUrl }}" target="_blank" rel="noopener" class="btn btn-solid-hover" style="display:inline-flex;align-items:center;gap:8px;margin-top:18px;text-decoration:none;cursor:pointer;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:15px;color:#7d5411;background:transparent;border:1px solid #b68235;padding:10px 18px;border-radius:4px">
       <svg width="17" height="17" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
         <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
         <circle cx="12" cy="10" r="3"></circle>
@@ -382,52 +474,59 @@
   </div>
 
   <div class="reveal" style="padding:0 32px 48px;text-align:center">
-    <svg width="22" height="22" sc-camel-view-box="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto 14px">
-      <path d="M5 22h14"></path><path d="M5 2h14"></path>
-      <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path>
-      <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path>
-    </svg>
+    <div class="icon-badge">
+      <svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 22h14"></path><path d="M5 2h14"></path>
+        <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path>
+        <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path>
+      </svg>
+    </div>
     <div style="font-family:'Lora',serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#201f1d;opacity:0.55;margin-bottom:18px">Faltan</div>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-      <div style="min-width:88px;border:1px solid rgba(32,31,29,0.16);border-radius:4px;padding:14px 10px">
+      <div class="premium-card" style="min-width:88px;padding:14px 10px">
         <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:34px;line-height:1;font-variant-numeric:tabular-nums;color:#7d5411">{{ days }}</div>
         <div style="font-family:'Lora',serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;opacity:0.6;margin-top:6px">Días</div>
       </div>
-      <div style="min-width:88px;border:1px solid rgba(32,31,29,0.16);border-radius:4px;padding:14px 10px">
+      <div class="premium-card" style="min-width:88px;padding:14px 10px">
         <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:34px;line-height:1;font-variant-numeric:tabular-nums;color:#7d5411">{{ hours }}</div>
         <div style="font-family:'Lora',serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;opacity:0.6;margin-top:6px">Horas</div>
       </div>
-      <div style="min-width:88px;border:1px solid rgba(32,31,29,0.16);border-radius:4px;padding:14px 10px">
+      <div class="premium-card" style="min-width:88px;padding:14px 10px">
         <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:34px;line-height:1;font-variant-numeric:tabular-nums;color:#7d5411">{{ minutes }}</div>
         <div style="font-family:'Lora',serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;opacity:0.6;margin-top:6px">Minutos</div>
       </div>
-      <div style="min-width:88px;border:1px solid rgba(32,31,29,0.16);border-radius:4px;padding:14px 10px">
+      <div class="premium-card" style="min-width:88px;padding:14px 10px">
         <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:34px;line-height:1;font-variant-numeric:tabular-nums;color:#7d5411">{{ seconds }}</div>
         <div style="font-family:'Lora',serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;opacity:0.6;margin-top:6px">Segundos</div>
       </div>
     </div>
   </div>
 
-  <div style="height:1px;background:rgba(32,31,29,0.16);margin:0 32px 40px"></div>
+  <div class="divider-ornament" style="margin:0 32px 40px"><span></span></div>
 
   <div class="reveal" style="padding:0 32px 48px">
+    <span class="eyebrow">El gran día</span>
     <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;text-align:center;margin:0 0 28px">Itinerario</h2>
     <div class="schedule-row" style="display:flex;gap:24px;justify-content:center">
-      <div style="flex:1;max-width:260px;border:1px solid rgba(32,31,29,0.16);border-radius:4px;padding:22px;text-align:center">
-        <svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto 12px">
-          <path d="M19 21V10.5a1 1 0 0 0-.4-.8l-6-4.5a1 1 0 0 0-1.2 0l-6 4.5a1 1 0 0 0-.4.8V21"></path>
-          <path d="M12 2v4"></path><path d="M10 4h4"></path>
-          <path d="M3 21h18"></path><path d="M10 21v-5a2 2 0 1 1 4 0v5"></path>
-        </svg>
+      <div class="premium-card" style="flex:1;max-width:260px;padding:22px;text-align:center">
+        <div class="icon-badge">
+          <svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21V10.5a1 1 0 0 0-.4-.8l-6-4.5a1 1 0 0 0-1.2 0l-6 4.5a1 1 0 0 0-.4.8V21"></path>
+            <path d="M12 2v4"></path><path d="M10 4h4"></path>
+            <path d="M3 21h18"></path><path d="M10 21v-5a2 2 0 1 1 4 0v5"></path>
+          </svg>
+        </div>
         <div style="font-family:'Lora',serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#b68235;margin-bottom:8px">Ceremonia</div>
         <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;font-variant-numeric:tabular-nums">3:30 pm</div>
       </div>
-      <div style="flex:1;max-width:260px;border:1px solid rgba(32,31,29,0.16);border-radius:4px;padding:22px;text-align:center">
-        <svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto 12px">
-          <path d="M3 2v7c0 1.1.9 2 2 2h1a2 2 0 0 0 2-2V2"></path>
-          <path d="M6 2v20"></path>
-          <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"></path>
-        </svg>
+      <div class="premium-card" style="flex:1;max-width:260px;padding:22px;text-align:center">
+        <div class="icon-badge">
+          <svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 2v7c0 1.1.9 2 2 2h1a2 2 0 0 0 2-2V2"></path>
+            <path d="M6 2v20"></path>
+            <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"></path>
+          </svg>
+        </div>
         <div style="font-family:'Lora',serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#b68235;margin-bottom:8px">Recepción</div>
         <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;font-variant-numeric:tabular-nums">4:10 pm</div>
       </div>
@@ -435,9 +534,11 @@
   </div>
 
   <div class="reveal" style="padding:0 32px 56px;text-align:center">
-    <svg width="22" height="22" sc-camel-view-box="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto 14px">
-      <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
-    </svg>
+    <div class="icon-badge">
+      <svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
+      </svg>
+    </div>
     <div style="font-family:'Lora',serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#201f1d;opacity:0.55;margin-bottom:8px">Código de vestimenta</div>
     <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px">Formal</div>
   </div>
@@ -448,13 +549,16 @@
     </div>
   </div>
 
-  <div style="height:1px;background:rgba(32,31,29,0.16);margin:0 32px 48px"></div>
+  <div class="divider-ornament" style="margin:0 32px 48px"><span></span></div>
 
   <div class="reveal" style="padding:0 32px 72px">
-    <svg width="22" height="22" sc-camel-view-box="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto 14px">
-      <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-    </svg>
+    <div class="icon-badge">
+      <svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+      </svg>
+    </div>
+    <span class="eyebrow">RSVP</span>
     <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;text-align:center;margin:0 0 8px">Confirma tu asistencia</h2>
     <p style="text-align:center;font-size:13px;opacity:0.65;margin:0 0 36px">Te esperamos antes del 1 de octubre</p>
 
@@ -463,7 +567,7 @@
         <label style="display:block;font-size:12px;margin-bottom:5px;color:rgba(32,31,29,0.7)">Escribe tu nombre completo</label>
         <div style="display:flex;gap:10px;align-items:flex-start">
           <input type="text" value="{{ query }}" sc-camel-on-change="{{ setQuery }}" sc-camel-on-key-down="{{ onSearchKey }}" placeholder="Ej. Andrés Ruz" style="flex:1;min-height:40px;padding:8px 10px;font:inherit;font-size:14px;color:#201f1d;background:transparent;border:1px solid rgba(32,31,29,0.16);border-radius:4px;box-sizing:border-box">
-          <button sc-camel-on-click="{{ doSearch }}" style="cursor:pointer;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:15px;color:#7d5411;background:transparent;border:1px solid #b68235;padding:11px 18px;border-radius:4px;white-space:nowrap">
+          <button class="btn btn-solid-hover" sc-camel-on-click="{{ doSearch }}" style="cursor:pointer;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:15px;color:#7d5411;background:transparent;border:1px solid #b68235;padding:11px 18px;border-radius:4px;white-space:nowrap">
             Buscar
           </button>
         </div>
@@ -475,7 +579,7 @@
       <div style="max-width:520px;margin:0 auto">
         <p style="font-size:14px;opacity:0.75;margin:0 0 20px;text-align:center">Encontramos varias invitaciones con ese nombre. Elige la tuya.</p>
         <sc-for list="{{ matches }}" as="g" hint-placeholder-count="2">
-          <button sc-camel-on-click="{{ g.pick }}" style="width:100%;text-align:left;cursor:pointer;background:transparent;border:1px solid rgba(32,31,29,0.16);border-radius:4px;padding:16px 18px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+          <button class="btn" sc-camel-on-click="{{ g.pick }}" style="width:100%;text-align:left;cursor:pointer;background:transparent;border:1px solid rgba(32,31,29,0.16);border-radius:4px;padding:16px 18px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:12px">
             <span>
               <span style="display:block;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:19px;color:#201f1d">{{ g.familia }}</span>
               <span style="display:block;font-family:'Lora',serif;font-size:12px;opacity:0.65;margin-top:4px">Titular: {{ g.titular }}</span>
@@ -483,7 +587,7 @@
             <span style="font-family:'Lora',serif;font-size:12px;color:#7d5411;white-space:nowrap;font-variant-numeric:tabular-nums">{{ g.cupos }}</span>
           </button>
         </sc-for>
-        <button sc-camel-on-click="{{ reset }}" style="cursor:pointer;font-family:'Lora',serif;font-size:13px;color:#201f1d;background:transparent;border:1px solid rgba(32,31,29,0.16);padding:10px 16px;border-radius:4px;margin-top:8px">
+        <button class="btn" sc-camel-on-click="{{ reset }}" style="cursor:pointer;font-family:'Lora',serif;font-size:13px;color:#201f1d;background:transparent;border:1px solid rgba(32,31,29,0.16);padding:10px 16px;border-radius:4px;margin-top:8px">
           Buscar de nuevo
         </button>
       </div>
@@ -491,7 +595,7 @@
 
     <sc-if value="{{ isFamily }}" hint-placeholder-val="{{ false }}">
       <div style="max-width:520px;margin:0 auto">
-        <div style="border:1px solid rgba(32,31,29,0.16);border-radius:4px;padding:20px;margin-bottom:28px;text-align:center">
+        <div class="premium-card" style="padding:20px;margin-bottom:28px;text-align:center">
           <div style="font-family:'Lora',serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#b68235;margin-bottom:8px">Invitación reservada para</div>
           <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px">{{ familyName }}</div>
           <div style="font-size:13px;opacity:0.7;margin-top:8px;font-variant-numeric:tabular-nums">{{ cuposLabel }}</div>
@@ -503,8 +607,8 @@
           <div style="border-bottom:1px solid rgba(32,31,29,0.16);padding:14px 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
             <input type="text" value="{{ m.name }}" sc-camel-on-change="{{ m.onName }}" placeholder="{{ m.placeholder }}" style="flex:1;min-width:180px;min-height:38px;padding:8px 10px;font:inherit;font-size:14px;color:#201f1d;background:transparent;border:1px solid rgba(32,31,29,0.16);border-radius:4px;box-sizing:border-box">
             <div style="display:flex;gap:8px">
-              <button sc-camel-on-click="{{ m.setYes }}" style="cursor:pointer;flex:none;white-space:nowrap;font-family:'Lora',serif;font-size:13px;padding:8px 14px;border-radius:4px;background:transparent;border:1px solid {{ m.yesBorder }};color:{{ m.yesColor }}">Asiste</button>
-              <button sc-camel-on-click="{{ m.setNo }}" style="cursor:pointer;flex:none;white-space:nowrap;font-family:'Lora',serif;font-size:13px;padding:8px 14px;border-radius:4px;background:transparent;border:1px solid {{ m.noBorder }};color:{{ m.noColor }}">No asiste</button>
+              <button class="btn" sc-camel-on-click="{{ m.setYes }}" style="cursor:pointer;flex:none;white-space:nowrap;font-family:'Lora',serif;font-size:13px;padding:8px 14px;border-radius:4px;background:transparent;border:1px solid {{ m.yesBorder }};color:{{ m.yesColor }}">Asiste</button>
+              <button class="btn" sc-camel-on-click="{{ m.setNo }}" style="cursor:pointer;flex:none;white-space:nowrap;font-family:'Lora',serif;font-size:13px;padding:8px 14px;border-radius:4px;background:transparent;border:1px solid {{ m.noBorder }};color:{{ m.noColor }}">No asiste</button>
             </div>
           </div>
         </sc-for>
@@ -517,10 +621,10 @@
         <p style="font-size:13px;color:#7d5411;margin:16px 0 0;min-height:18px">{{ formError }}</p>
 
         <div style="display:flex;gap:12px;margin-top:12px;align-items:center">
-          <button sc-camel-on-click="{{ confirm }}" style="flex:1;cursor:pointer;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:16px;color:#7d5411;background:transparent;border:1px solid #b68235;padding:13px 20px;border-radius:4px">
+          <button class="btn btn-solid-hover" sc-camel-on-click="{{ confirm }}" style="flex:1;cursor:pointer;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:16px;color:#7d5411;background:transparent;border:1px solid #b68235;padding:13px 20px;border-radius:4px">
             Confirmar asistencia
           </button>
-          <button sc-camel-on-click="{{ reset }}" style="cursor:pointer;font-family:'Lora',serif;font-size:13px;color:#201f1d;background:transparent;border:1px solid rgba(32,31,29,0.16);padding:13px 16px;border-radius:4px">
+          <button class="btn" sc-camel-on-click="{{ reset }}" style="cursor:pointer;font-family:'Lora',serif;font-size:13px;color:#201f1d;background:transparent;border:1px solid rgba(32,31,29,0.16);padding:13px 16px;border-radius:4px">
             Volver
           </button>
         </div>
@@ -528,7 +632,7 @@
     </sc-if>
 
     <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
-      <div style="border:1px solid rgba(32,31,29,0.16);border-radius:4px;padding:40px 28px;max-width:520px;margin:0 auto;text-align:center">
+      <div class="premium-card" style="padding:40px 28px;max-width:520px;margin:0 auto;text-align:center">
         <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;margin:0 0 12px">Gracias, {{ familyName }}</h3>
         <p style="font-size:14px;opacity:0.8;margin:0 0 20px">{{ summaryLine }}</p>
         <div style="height:1px;background:rgba(32,31,29,0.16);margin:0 0 20px"></div>
