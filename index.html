@@ -407,11 +407,68 @@
     background: #b68235 !important;
     color: #faf9f6 !important;
   }
+
+  .cover-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px;
+    background: linear-gradient(160deg, #f6f2ea 0%, #efe6d8 55%, #e6d7ba 100%);
+    transition: opacity 0.8s ease;
+    animation: coverFadeIn 1.1s ease;
+  }
+  @keyframes coverFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .cover-monogram {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 28px;
+    border-radius: 50%;
+    border: 1px solid #b68235;
+    background: #faf9f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 34px rgba(32,31,29,0.14);
+    animation: coverPulseRing 3s ease-in-out infinite;
+  }
+  .cover-monogram span {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 40px;
+    letter-spacing: 0.02em;
+    color: #7d5411;
+  }
+  @keyframes coverPulseRing {
+    0%, 100% { box-shadow: 0 10px 34px rgba(32,31,29,0.14), 0 0 0 0 rgba(182,130,53,0.25); }
+    50% { box-shadow: 0 10px 34px rgba(32,31,29,0.14), 0 0 0 14px rgba(182,130,53,0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cover-screen { animation: none; }
+    .cover-monogram { animation: none; }
+  }
 </style>
 
 </helmet>
 
 <div style="max-width:900px;margin:0 auto;background:#f3f2f2">
+
+  <div class="cover-screen" style="opacity:{{ coverOpacity }};pointer-events:{{ coverPointer }}" aria-hidden="{{ coverAriaHidden }}">
+    <div class="cover-monogram"><span>J&amp;J</span></div>
+    <div style="font-family:'Lora',serif;font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:#7d5411;opacity:0.85;margin-bottom:12px">Nuestra boda</div>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:34px;line-height:1.15;color:#201f1d;margin:0 0 10px">Juan Daniel &amp; Jessica</h1>
+    <div style="font-family:'Lora',serif;font-size:13px;letter-spacing:0.08em;color:rgba(32,31,29,0.6);margin-bottom:8px">24 de octubre de 2026 · Bremen</div>
+    <button class="btn btn-solid-hover" sc-camel-on-click="{{ openInvitation }}" style="cursor:pointer;margin-top:26px;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:16px;letter-spacing:0.02em;color:#7d5411;background:#faf9f6;border:1px solid #b68235;padding:14px 30px;border-radius:999px">
+      Clic aquí para abrir
+    </button>
+  </div>
 
   <sc-if value="{{ musicAvailable }}" hint-placeholder-val="{{ false }}">
     <button class="btn" sc-camel-on-click="{{ toggleMusic }}" title="{{ musicLabel }}" aria-label="{{ musicLabel }}" style="position:fixed;top:18px;right:18px;z-index:20;width:44px;height:44px;border-radius:50%;cursor:pointer;background:rgba(243,242,242,0.9);border:1px solid #b68235;color:#7d5411;display:flex;align-items:center;justify-content:center">
@@ -674,7 +731,7 @@ function normalize(s) {
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { step: "search", query: "", searchError: "", family: null, members: [], matches: [], message: "", now: Date.now(), musicOn: false, audioReady: false };
+    this.state = { step: "search", query: "", searchError: "", family: null, members: [], matches: [], message: "", now: Date.now(), musicOn: false, audioReady: false, opened: false };
   }
 
   componentDidMount() {
@@ -685,23 +742,23 @@ class Component extends DCLogic {
     this.audio.volume = 0.5;
     this.audio.addEventListener("error", function () { self.setState({ audioReady: false, musicOn: false }); });
     this.audio.addEventListener("canplay", function () { self.setState({ audioReady: true }); });
-    var p = this.audio.play();
-    if (p && p.then) {
-      p.then(function () { self.setState({ musicOn: true }); }).catch(function () { self.setState({ musicOn: false }); });
-    }
-    this.startOnInteract = function () {
-      if (!self.state.musicOn && self.audio) {
-        self.audio.play().then(function () { self.setState({ musicOn: true }); }).catch(function () {});
-      }
-      document.removeEventListener("click", self.startOnInteract);
-    };
-    document.addEventListener("click", this.startOnInteract);
+    this.audio.load();
+    document.documentElement.style.overflow = "hidden";
   }
 
   componentWillUnmount() {
     clearInterval(this.timer);
     if (this.audio) this.audio.pause();
-    if (this.startOnInteract) document.removeEventListener("click", this.startOnInteract);
+    document.documentElement.style.overflow = "";
+  }
+
+  openInvitation() {
+    var self = this;
+    document.documentElement.style.overflow = "";
+    if (this.audio) {
+      this.audio.play().then(function () { self.setState({ musicOn: true }); }).catch(function () {});
+    }
+    this.setState({ opened: true });
   }
 
   findMatches(q) {
@@ -746,6 +803,11 @@ class Component extends DCLogic {
     var pad = function (n) { return n < 10 ? "0" + n : String(n); };
 
     return {
+      opened: this.state.opened,
+      coverOpacity: this.state.opened ? "0" : "1",
+      coverPointer: this.state.opened ? "none" : "auto",
+      coverAriaHidden: this.state.opened ? "true" : "false",
+      openInvitation: function () { self.openInvitation(); },
       days: String(Math.floor(diff / 86400000)),
       hours: pad(Math.floor(diff / 3600000) % 24),
       minutes: pad(Math.floor(diff / 60000) % 60),
