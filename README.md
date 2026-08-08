@@ -58,3 +58,22 @@ Cualquier hosting estático sirve (GitHub Pages, Netlify, Vercel, Cloudflare Pag
 1. Sube este repositorio a GitHub.
 2. En **Settings → Pages**, elige la rama `main` y carpeta raíz (`/`).
 3. GitHub publicará el sitio en `https://<usuario>.github.io/<repo>/`.
+
+### Antes de cada despliegue: actualizar la versión de caché
+
+`index.html` incluye, al inicio del `<head>`, un chequeo que compara su propia
+versión contra `version.json` (pedido siempre sin caché); si detecta que hay
+una versión más nueva en el servidor, recarga la página una sola vez sin
+caché. Esto evita que alguien vea una versión vieja de la invitación después
+de que publiques cambios.
+
+Para que funcione, hay que avisarle al chequeo que hubo un despliegue nuevo.
+Después de editar `index.html` y antes de hacer commit, corré:
+
+```bash
+node scripts/bump-version.js
+```
+
+Esto actualiza `version.json` y todas las referencias de versión dentro de
+`index.html` (el chequeo del `<head>` y los `?v=` de los assets) en un solo
+paso.

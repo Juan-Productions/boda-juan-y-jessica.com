@@ -1,15 +1,38 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8">
+<script>
+(function () {
+  var BUILD_VERSION = "2026-08-08.2";
+  try {
+    if (sessionStorage.getItem('dc_reloaded_for_version')) return;
+    fetch('version.json?_=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data && data.version && data.version !== BUILD_VERSION) {
+          sessionStorage.setItem('dc_reloaded_for_version', '1');
+          var url = new URL(location.href);
+          url.searchParams.set('_v', Date.now().toString());
+          location.replace(url.toString());
+        }
+      })
+      .catch(function () {});
+  } catch (e) {}
+})();
+</script>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="build-version" content="2026-08-08.2">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Juan Daniel &amp; Jessica — Invitación de boda</title>
 <script>
   window.__resources = {
-    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js",
-    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js"
+    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-08-08.2",
+    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-08-08.2"
   };
 </script>
-<script src="assets/vendor/dc-runtime.js"></script>
+<script src="assets/vendor/dc-runtime.js?v=2026-08-08.2"></script>
 </head>
 <body>
 <x-dc>
@@ -294,7 +317,7 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 </style>
-<script src="assets/vendor/image-slot.js"></script>
+<script src="assets/vendor/image-slot.js?v=2026-08-08.2"></script>
 <style>
   body{margin:0;background:#f3f2f2;color:#201f1d;font-family:'Lora',serif;-webkit-font-smoothing:antialiased}
   a{color:#7d5411;text-underline-offset:3px}
@@ -736,7 +759,7 @@ class Component extends DCLogic {
   componentDidMount() {
     var self = this;
     this.timer = setInterval(function () { self.setState({ now: Date.now() }); }, 1000);
-    this.audio = new Audio("./assets/audio/musica.mp3");
+    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-08-08.2");
     this.audio.loop = true;
     this.audio.volume = 0.5;
     this.audio.addEventListener("error", function () { self.setState({ audioReady: false, musicOn: false }); });
