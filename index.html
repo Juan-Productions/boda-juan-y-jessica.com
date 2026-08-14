@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <script>
 (function () {
-  var BUILD_VERSION = "2026-08-13.1";
+  var BUILD_VERSION = "2026-08-14.1";
   try {
     if (sessionStorage.getItem('dc_reloaded_for_version')) return;
     fetch('version.json?_=' + Date.now(), { cache: 'no-store' })
@@ -23,16 +23,16 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="build-version" content="2026-08-13.1">
+<meta name="build-version" content="2026-08-14.1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Juan Daniel &amp; Jessica — Invitación de boda</title>
 <script>
   window.__resources = {
-    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-08-13.1",
-    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-08-13.1"
+    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-08-14.1",
+    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-08-14.1"
   };
 </script>
-<script src="assets/vendor/dc-runtime.js?v=2026-08-13.1"></script>
+<script src="assets/vendor/dc-runtime.js?v=2026-08-14.1"></script>
 </head>
 <body>
 <x-dc>
@@ -317,7 +317,7 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 </style>
-<script src="assets/vendor/image-slot.js?v=2026-08-13.1"></script>
+<script src="assets/vendor/image-slot.js?v=2026-08-14.1"></script>
 <style>
   body{margin:0;background:#f3f2f2;color:#201f1d;font-family:'Lora',serif;-webkit-font-smoothing:antialiased}
   a{color:#7d5411;text-underline-offset:3px}
@@ -706,6 +706,8 @@
     </div>
   </div>
 
+  <div class="divider-ornament" style="margin:0 32px 48px"><span></span></div>
+
   <div class="reveal" style="padding:0 32px 56px;text-align:center">
     <div class="icon-badge">
       <svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
@@ -716,6 +718,8 @@
     <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px">Formal</div>
   </div>
 
+  <div class="divider-ornament" style="margin:0 32px 48px"><span></span></div>
+
   <div class="reveal" style="padding:0 32px 56px;text-align:center">
     <div class="icon-badge">
       <svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
@@ -725,6 +729,8 @@
     <div style="font-family:'Lora',serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#201f1d;opacity:0.55;margin-bottom:10px">Solo adultos</div>
     <p style="font-family:'Lora',serif;font-size:14px;line-height:1.7;max-width:480px;margin:0 auto;color:#201f1d;opacity:0.85">Con mucho cariño, les informamos que amamos a los niños, pero <strong style="font-weight:600;opacity:1">la recepción solo será para adultos</strong>. Gracias por su comprensión.</p>
   </div>
+
+  <div class="divider-ornament" style="margin:0 32px 48px"><span></span></div>
 
   <div class="reveal" style="padding:0 32px 56px;text-align:center">
     <div class="icon-badge">
@@ -739,6 +745,8 @@
     <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;margin-bottom:14px">Lluvia de sobres</div>
     <p style="font-family:'Lora',serif;font-size:14px;line-height:1.7;max-width:480px;margin:0 auto;color:#201f1d;opacity:0.85">Tu presencia es el mejor regalo que podemos recibir. Si deseas tener un detalle adicional con nosotros, hemos preparado una lluvia de sobres el día de la boda.</p>
   </div>
+
+  <div class="divider-ornament" style="margin:0 32px 48px"><span></span></div>
 
   <div class="reveal" style="padding:0 32px 56px">
     <span class="eyebrow">Momentos</span>
@@ -905,7 +913,7 @@ class Component extends DCLogic {
   componentDidMount() {
     var self = this;
     this.timer = setInterval(function () { self.setState({ now: Date.now() }); }, 1000);
-    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-08-13.1");
+    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-08-14.1");
     this.audio.loop = true;
     this.audio.volume = 0.5;
     this.audio.addEventListener("error", function () { self.setState({ audioReady: false, musicOn: false }); });
