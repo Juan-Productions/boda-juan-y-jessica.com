@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <script>
 (function () {
-  var BUILD_VERSION = "2026-08-14.2";
+  var BUILD_VERSION = "2026-08-14.3";
   try {
     if (sessionStorage.getItem('dc_reloaded_for_version')) return;
     fetch('version.json?_=' + Date.now(), { cache: 'no-store' })
@@ -23,16 +23,16 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="build-version" content="2026-08-14.2">
+<meta name="build-version" content="2026-08-14.3">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Juan Daniel &amp; Jessica — Invitación de boda</title>
 <script>
   window.__resources = {
-    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-08-14.2",
-    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-08-14.2"
+    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-08-14.3",
+    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-08-14.3"
   };
 </script>
-<script src="assets/vendor/dc-runtime.js?v=2026-08-14.2"></script>
+<script src="assets/vendor/dc-runtime.js?v=2026-08-14.3"></script>
 </head>
 <body>
 <x-dc>
@@ -317,7 +317,6 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 </style>
-<script src="assets/vendor/image-slot.js?v=2026-08-14.2"></script>
 <style>
   body{margin:0;background:#f3f2f2;color:#201f1d;font-family:'Lora',serif;-webkit-font-smoothing:antialiased}
   a{color:#7d5411;text-underline-offset:3px}
@@ -500,10 +499,13 @@
     object-fit: cover;
     display: block;
   }
-  .carousel-img, .lightbox-img, .verse-photo img {
+  .carousel-img, .lightbox-img, .verse-photo img, .static-photo {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
+  }
+  .static-photo {
+    pointer-events: none;
   }
   .carousel-dots {
     display: flex;
@@ -678,7 +680,7 @@
 
   <div style="position:relative;width:100%;height:560px;overflow:hidden">
     <div style="position:absolute;inset:0;padding:14px;box-sizing:border-box">
-      <image-slot id="hero-field" shape="rect" placeholder="Foto: pareja en el campo" style="width:100%;height:100%;filter:sepia(0.22) saturate(0.82) contrast(1.05)"></image-slot>
+      <img class="static-photo" src="./assets/photos/hero.jpg" alt="Juan Daniel y Jessica" draggable="false" style="width:100%;height:100%;object-fit:cover;display:block;filter:sepia(0.22) saturate(0.82) contrast(1.05)">
     </div>
     <div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(32,31,29,0) 45%, rgba(32,31,29,0.55) 100%);pointer-events:none"></div>
     <div style="position:absolute;bottom:0;left:0;right:0;padding:40px 32px 30px;text-align:center;pointer-events:none">
@@ -1009,7 +1011,7 @@ class Component extends DCLogic {
   componentDidMount() {
     var self = this;
     this.timer = setInterval(function () { self.setState({ now: Date.now() }); }, 1000);
-    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-08-14.2");
+    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-08-14.3");
     this.audio.loop = true;
     this.audio.volume = 0.5;
     this.audio.addEventListener("error", function () { self.setState({ audioReady: false, musicOn: false }); });
@@ -1031,7 +1033,7 @@ class Component extends DCLogic {
     // Deterrente básico contra guardar las fotos (no es infalible: un
     // screenshot siempre funciona, pero evita el "guardar imagen" casual).
     this.onContextMenu = function (e) {
-      if (e.target.closest && e.target.closest(".carousel-img, .lightbox-img, .verse-photo img")) {
+      if (e.target.closest && e.target.closest(".carousel-img, .lightbox-img, .verse-photo img, .static-photo")) {
         e.preventDefault();
       }
     };

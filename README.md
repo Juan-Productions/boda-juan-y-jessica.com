@@ -32,8 +32,8 @@ y entra a `http://localhost:5173`.
 
 - **Lista de invitados y hoja de confirmación**: dentro de `index.html`, busca el bloque `<script type="text/x-dc">` al final del archivo. Ahí están `GUEST_LIST` (familias y cupos) y `SHEET_ENDPOINT` (URL del Web App de Google Apps Script que recibe las confirmaciones).
 - **Fecha de la boda**: la constante `target` dentro de `renderVals()` en ese mismo script (`new Date(2026, 9, 24, 15, 30, 0)`).
-- **Foto de portada** (`hero-field`, la imagen grande de arriba): es un `<image-slot>`, un componente que solo se puede rellenar por drag&drop dentro del editor de Claude — **no funciona en el sitio ya publicado**. Para ponerle una foto real hay que reemplazar ese `<image-slot>` por un `<img src="assets/photos/...">` a mano (avisame y te lo hago).
-- **Galería / carrusel**: son `<img>` normales, sí funcionan en cualquier hosting. Instrucciones en [assets/photos/README.md](assets/photos/README.md) — básicamente: subís los archivos con el nombre que pide ese archivo y listo.
+- **Fotos** (portada, versículo, galería): todas son `<img>` normales — funcionan en cualquier hosting, no hay que editarlas desde ningún editor especial. Instrucciones y nombres exactos de archivo en [assets/photos/README.md](assets/photos/README.md); básicamente: subís los archivos con esos nombres a `assets/photos/` y listo.
+- **Foto de portada**: es estática a propósito — no tiene botón de reemplazo, ni se puede ampliar/hacer clic (a diferencia de las demás fotos, que sí abren en grande al tocarlas).
 - **Textos y estilos**: son HTML/CSS planos dentro del mismo `index.html`.
 
 ## Galería con carrusel
