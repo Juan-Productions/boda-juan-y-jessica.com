@@ -1,13 +1,19 @@
-# Fotos de la galería
+# Fotos
 
-Poné acá las fotos del carrusel con estos nombres exactos:
+Poné acá las fotos con estos nombres exactos:
 
 ```
 galeria-1.jpg
 galeria-2.jpg
 galeria-3.jpg
 galeria-4.jpg
+versiculo.jpg
 ```
+
+`versiculo.jpg` es la foto grande de la sección con el texto de Rut 1:16b
+(entre la cuenta regresiva y el itinerario) — usá una foto vertical/horizontal
+con buen contraste en la parte de abajo, porque ahí se le pone un degradado
+oscuro para que el texto se lea bien.
 
 Para agregar más fotos (o sacar alguna), editá el arreglo `GALLERY_PHOTOS`
 dentro de `index.html` (buscá `var GALLERY_PHOTOS = [` cerca del final del

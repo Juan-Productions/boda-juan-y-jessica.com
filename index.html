@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <script>
 (function () {
-  var BUILD_VERSION = "2026-08-14.1";
+  var BUILD_VERSION = "2026-08-14.2";
   try {
     if (sessionStorage.getItem('dc_reloaded_for_version')) return;
     fetch('version.json?_=' + Date.now(), { cache: 'no-store' })
@@ -23,16 +23,16 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="build-version" content="2026-08-14.1">
+<meta name="build-version" content="2026-08-14.2">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Juan Daniel &amp; Jessica — Invitación de boda</title>
 <script>
   window.__resources = {
-    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-08-14.1",
-    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-08-14.1"
+    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-08-14.2",
+    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-08-14.2"
   };
 </script>
-<script src="assets/vendor/dc-runtime.js?v=2026-08-14.1"></script>
+<script src="assets/vendor/dc-runtime.js?v=2026-08-14.2"></script>
 </head>
 <body>
 <x-dc>
@@ -317,7 +317,7 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 </style>
-<script src="assets/vendor/image-slot.js?v=2026-08-14.1"></script>
+<script src="assets/vendor/image-slot.js?v=2026-08-14.2"></script>
 <style>
   body{margin:0;background:#f3f2f2;color:#201f1d;font-family:'Lora',serif;-webkit-font-smoothing:antialiased}
   a{color:#7d5411;text-underline-offset:3px}
@@ -500,7 +500,7 @@
     object-fit: cover;
     display: block;
   }
-  .carousel-img, .lightbox-img {
+  .carousel-img, .lightbox-img, .verse-photo img {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
@@ -570,6 +570,77 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .carousel-slide, .lightbox, .lightbox-img { transition: none; }
+  }
+
+  .verse-photo {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .verse-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: sepia(0.22) saturate(0.82) contrast(1.05);
+    animation: verseKenBurns 22s ease-in-out infinite alternate;
+  }
+  @keyframes verseKenBurns {
+    from { transform: scale(1); }
+    to { transform: scale(1.09); }
+  }
+  .verse-gradient {
+    position: absolute;
+    inset: 14px;
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgba(32,31,29,0) 38%, rgba(32,31,29,0.85) 100%);
+    pointer-events: none;
+  }
+  .verse-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 1.55;
+    color: #f8f4f4;
+    margin: 0 0 12px;
+    text-shadow: 0 2px 14px rgba(0,0,0,0.3);
+  }
+  .verse-ref {
+    display: block;
+    font-family: 'Lora', serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #e6c98a;
+  }
+  .verse-hint {
+    position: absolute;
+    top: 26px;
+    right: 26px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(248,244,244,0.55);
+    background: rgba(32,31,29,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #f8f4f4;
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+  }
+  .verse-photo:hover .verse-hint {
+    opacity: 1;
+    transform: scale(1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .verse-photo img { animation: none; }
   }
 </style>
 
@@ -672,6 +743,27 @@
         <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:34px;line-height:1;font-variant-numeric:tabular-nums;color:#7d5411">{{ seconds }}</div>
         <div style="font-family:'Lora',serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;opacity:0.6;margin-top:6px">Segundos</div>
       </div>
+    </div>
+  </div>
+
+  <div class="divider-ornament" style="margin:0 32px 40px"><span></span></div>
+
+  <div class="reveal" style="position:relative;width:100%;height:440px;overflow:hidden;margin-bottom:40px">
+    <div style="position:absolute;inset:0;padding:14px;box-sizing:border-box">
+      <div class="verse-photo" sc-camel-on-click="{{ openVersePhoto }}" title="Ver foto completa">
+        <img src="{{ versePhotoSrc }}" alt="{{ versePhotoAlt }}" draggable="false">
+        <div class="verse-hint">
+          <svg width="16" height="16" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path>
+            <path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="verse-gradient"></div>
+    <div style="position:absolute;bottom:0;left:0;right:0;padding:34px 32px;text-align:center;pointer-events:none">
+      <p class="verse-text">&ldquo;Porque a dondequiera que tú fueres, iré yo;<br>y dondequiera que vivieres, viviré.<br>Tu pueblo será mi pueblo, y tu Dios mi Dios.&rdquo;</p>
+      <span class="verse-ref">Rut 1:16b</span>
     </div>
   </div>
 
@@ -889,6 +981,10 @@ var GALLERY_PHOTOS = [
 ];
 var GALLERY_INTERVAL_MS = 4500;
 
+// Foto del versículo (entre la cuenta regresiva y el itinerario).
+// Poné el archivo en assets/photos/ con este nombre (o cambiá la ruta acá).
+var VERSE_PHOTO = { src: "./assets/photos/versiculo.jpg", alt: "Juan Daniel y Jessica" };
+
 var GUEST_LIST = [
   { familia: "Familia Ruz Pérez", titular: "Andrés Ruz", cupos: 4 },
   { familia: "Familia Gómez Salazar", titular: "Laura Gómez", cupos: 2 },
@@ -907,13 +1003,13 @@ function normalize(s) {
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { step: "search", query: "", searchError: "", family: null, members: [], matches: [], message: "", now: Date.now(), musicOn: false, audioReady: false, opened: false, carouselIndex: 0, lightboxIndex: null };
+    this.state = { step: "search", query: "", searchError: "", family: null, members: [], matches: [], message: "", now: Date.now(), musicOn: false, audioReady: false, opened: false, carouselIndex: 0, lightboxImage: null };
   }
 
   componentDidMount() {
     var self = this;
     this.timer = setInterval(function () { self.setState({ now: Date.now() }); }, 1000);
-    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-08-14.1");
+    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-08-14.2");
     this.audio.loop = true;
     this.audio.volume = 0.5;
     this.audio.addEventListener("error", function () { self.setState({ audioReady: false, musicOn: false }); });
@@ -922,20 +1018,20 @@ class Component extends DCLogic {
     document.documentElement.style.overflow = "hidden";
 
     this.galleryTimer = setInterval(function () {
-      if (self.state.lightboxIndex === null) {
+      if (self.state.lightboxImage === null) {
         self.setState({ carouselIndex: (self.state.carouselIndex + 1) % GALLERY_PHOTOS.length });
       }
     }, GALLERY_INTERVAL_MS);
 
     this.onKeyDown = function (e) {
-      if (e.key === "Escape" && self.state.lightboxIndex !== null) self.closeLightbox();
+      if (e.key === "Escape" && self.state.lightboxImage !== null) self.closeLightbox();
     };
     document.addEventListener("keydown", this.onKeyDown);
 
     // Deterrente básico contra guardar las fotos (no es infalible: un
     // screenshot siempre funciona, pero evita el "guardar imagen" casual).
     this.onContextMenu = function (e) {
-      if (e.target.closest && e.target.closest(".carousel-img, .lightbox-img")) {
+      if (e.target.closest && e.target.closest(".carousel-img, .lightbox-img, .verse-photo img")) {
         e.preventDefault();
       }
     };
@@ -951,14 +1047,14 @@ class Component extends DCLogic {
     document.removeEventListener("contextmenu", this.onContextMenu);
   }
 
-  openLightbox(i) {
+  openLightbox(photo) {
     document.documentElement.style.overflow = "hidden";
-    this.setState({ lightboxIndex: i });
+    this.setState({ lightboxImage: photo });
   }
 
   closeLightbox() {
     document.documentElement.style.overflow = "";
-    this.setState({ lightboxIndex: null });
+    this.setState({ lightboxImage: null });
   }
 
   openInvitation() {
@@ -1023,7 +1119,7 @@ class Component extends DCLogic {
           alt: p.alt,
           opacity: i === self.state.carouselIndex ? "1" : "0",
           z: i === self.state.carouselIndex ? "2" : "1",
-          open: function () { self.openLightbox(i); }
+          open: function () { self.openLightbox({ src: p.src, alt: p.alt }); }
         };
       }),
       galleryDots: GALLERY_PHOTOS.map(function (p, i) {
@@ -1032,12 +1128,15 @@ class Component extends DCLogic {
           goTo: function () { self.setState({ carouselIndex: i }); }
         };
       }),
-      lightboxOpacity: this.state.lightboxIndex !== null ? "1" : "0",
-      lightboxPointer: this.state.lightboxIndex !== null ? "auto" : "none",
-      lightboxAriaHidden: this.state.lightboxIndex !== null ? "false" : "true",
-      lightboxScale: this.state.lightboxIndex !== null ? "1" : "0.9",
-      lightboxSrc: this.state.lightboxIndex !== null ? GALLERY_PHOTOS[this.state.lightboxIndex].src : "",
-      lightboxAlt: this.state.lightboxIndex !== null ? GALLERY_PHOTOS[this.state.lightboxIndex].alt : "",
+      versePhotoSrc: VERSE_PHOTO.src,
+      versePhotoAlt: VERSE_PHOTO.alt,
+      openVersePhoto: function () { self.openLightbox({ src: VERSE_PHOTO.src, alt: VERSE_PHOTO.alt }); },
+      lightboxOpacity: this.state.lightboxImage ? "1" : "0",
+      lightboxPointer: this.state.lightboxImage ? "auto" : "none",
+      lightboxAriaHidden: this.state.lightboxImage ? "false" : "true",
+      lightboxScale: this.state.lightboxImage ? "1" : "0.9",
+      lightboxSrc: this.state.lightboxImage ? this.state.lightboxImage.src : "",
+      lightboxAlt: this.state.lightboxImage ? this.state.lightboxImage.alt : "",
       closeLightbox: function () { self.closeLightbox(); },
       days: String(Math.floor(diff / 86400000)),
       hours: pad(Math.floor(diff / 3600000) % 24),
