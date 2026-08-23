@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <script>
 (function () {
-  var BUILD_VERSION = "2026-08-14.3";
+  var BUILD_VERSION = "2026-08-23.1";
   try {
     if (sessionStorage.getItem('dc_reloaded_for_version')) return;
     fetch('version.json?_=' + Date.now(), { cache: 'no-store' })
@@ -23,16 +23,16 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="build-version" content="2026-08-14.3">
+<meta name="build-version" content="2026-08-23.1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Juan Daniel &amp; Jessica — Invitación de boda</title>
 <script>
   window.__resources = {
-    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-08-14.3",
-    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-08-14.3"
+    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-08-23.1",
+    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-08-23.1"
   };
 </script>
-<script src="assets/vendor/dc-runtime.js?v=2026-08-14.3"></script>
+<script src="assets/vendor/dc-runtime.js?v=2026-08-23.1"></script>
 </head>
 <body>
 <x-dc>
@@ -441,7 +441,12 @@
     justify-content: center;
     text-align: center;
     padding: 32px;
-    background: linear-gradient(160deg, #f6f2ea 0%, #efe6d8 55%, #e6d7ba 100%);
+    background:
+      linear-gradient(90deg, transparent calc(50% - 1px), rgba(35,28,18,0.14) 50%, transparent calc(50% + 1px)),
+      radial-gradient(circle at 18% 25%, rgba(0,0,0,0.05), transparent 40%),
+      radial-gradient(circle at 82% 72%, rgba(0,0,0,0.05), transparent 45%),
+      radial-gradient(circle at 55% 12%, rgba(255,255,255,0.5), transparent 35%),
+      linear-gradient(160deg, #ece6da 0%, #e2d9c8 50%, #d7cab0 100%);
     transition: opacity 0.8s ease;
     animation: coverFadeIn 1.1s ease;
   }
@@ -449,33 +454,59 @@
     from { opacity: 0; }
     to { opacity: 1; }
   }
-  .cover-monogram {
-    width: 120px;
-    height: 120px;
-    margin: 0 auto 28px;
+  .wax-seal {
+    position: relative;
+    width: 156px;
+    height: 156px;
+    margin: 0 auto 26px;
+    padding: 0;
+    border: none;
     border-radius: 50%;
-    border: 1px solid #b68235;
-    background: #faf9f6;
+    background: transparent;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 10px 34px rgba(32,31,29,0.14);
     animation: coverPulseRing 3s ease-in-out infinite;
+    transition: transform 0.15s ease;
   }
-  .cover-monogram span {
+  .wax-seal:active {
+    transform: scale(0.95);
+  }
+  .wax-seal svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 10px 18px rgba(40,28,10,0.4));
+  }
+  .wax-seal-initials {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -52%);
     font-family: 'Cormorant Garamond', serif;
     font-weight: 600;
-    font-size: 40px;
+    font-style: italic;
+    font-size: 34px;
     letter-spacing: 0.02em;
-    color: #7d5411;
+    color: #4a2f0d;
+    text-shadow:
+      0 1px 0 rgba(255,225,170,0.35),
+      0 -1px 1px rgba(40,24,4,0.5);
+    pointer-events: none;
+  }
+  .cover-hint {
+    font-family: 'Lora', serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(58,45,25,0.55);
   }
   @keyframes coverPulseRing {
-    0%, 100% { box-shadow: 0 10px 34px rgba(32,31,29,0.14), 0 0 0 0 rgba(182,130,53,0.25); }
-    50% { box-shadow: 0 10px 34px rgba(32,31,29,0.14), 0 0 0 14px rgba(182,130,53,0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(182,130,53,0.28); }
+    50% { box-shadow: 0 0 0 16px rgba(182,130,53,0); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .cover-screen { animation: none; }
-    .cover-monogram { animation: none; }
+    .cover-screen, .wax-seal { animation: none; }
   }
 
   .carousel-wrap {
@@ -651,12 +682,26 @@
 <div style="max-width:900px;margin:0 auto;background:#f3f2f2">
 
   <div class="cover-screen" style="opacity:{{ coverOpacity }};pointer-events:{{ coverPointer }}" aria-hidden="{{ coverAriaHidden }}">
-    <div class="cover-monogram"><span>J&amp;J</span></div>
-    <div style="font-family:'Lora',serif;font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:#7d5411;opacity:0.85;margin-bottom:12px">Nuestra boda</div>
-    <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:34px;line-height:1.15;color:#201f1d;margin:0">Juan Daniel &amp; Jessica</h1>
-    <button class="btn btn-solid-hover" sc-camel-on-click="{{ openInvitation }}" style="cursor:pointer;margin-top:34px;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:16px;letter-spacing:0.02em;color:#7d5411;background:#faf9f6;border:1px solid #b68235;padding:14px 30px;border-radius:999px">
-      Clic aquí para abrir
+    <button class="wax-seal" sc-camel-on-click="{{ openInvitation }}" aria-label="Abrir invitación">
+      <svg sc-camel-view-box="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="waxEdge" x="-30%" y="-30%" width="160%" height="160%">
+            <feTurbulence type="fractalNoise" sc-camel-base-frequency="0.045" sc-camel-num-octaves="2" seed="7" result="noise"></feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="12" sc-camel-x-channel-selector="R" sc-camel-y-channel-selector="G"></feDisplacementMap>
+          </filter>
+          <radialGradient id="waxGrad" cx="35%" cy="28%" r="78%">
+            <stop offset="0%" stop-color="#dcae64"></stop>
+            <stop offset="55%" stop-color="#b6822f"></stop>
+            <stop offset="100%" stop-color="#815c20"></stop>
+          </radialGradient>
+        </defs>
+        <circle cx="100" cy="100" r="80" fill="url(#waxGrad)" filter="url(#waxEdge)"></circle>
+        <circle cx="100" cy="100" r="64" fill="none" stroke="#6b481a" stroke-opacity="0.4" stroke-width="2" filter="url(#waxEdge)"></circle>
+        <ellipse cx="72" cy="58" rx="34" ry="20" fill="#fff" opacity="0.16"></ellipse>
+      </svg>
+      <span class="wax-seal-initials">J&amp;J</span>
     </button>
+    <div class="cover-hint">Toca el sello para abrir</div>
   </div>
 
   <sc-if value="{{ musicAvailable }}" hint-placeholder-val="{{ false }}">
@@ -1011,7 +1056,7 @@ class Component extends DCLogic {
   componentDidMount() {
     var self = this;
     this.timer = setInterval(function () { self.setState({ now: Date.now() }); }, 1000);
-    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-08-14.3");
+    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-08-23.1");
     this.audio.loop = true;
     this.audio.volume = 0.5;
     this.audio.addEventListener("error", function () { self.setState({ audioReady: false, musicOn: false }); });
