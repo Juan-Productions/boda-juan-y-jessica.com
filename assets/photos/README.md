@@ -29,3 +29,12 @@ fotos que haya en la lista.
 Recomendado: fotos en formato `.jpg` o `.webp`, no más de ~500 KB cada una
 para que el sitio cargue rápido (podés comprimirlas en https://squoosh.app
 antes de subirlas).
+
+## `seal_blank.png` y `land.png`
+
+Estas dos son distintas a las de arriba: son los assets de la **portada
+animada** (`assets/intro-cover.jsx`), no fotos que reemplaces por las tuyas.
+`seal_blank.png` es la foto del sello de lacre sobre papel (sin iniciales —
+el "J&J" se dibuja en HTML/CSS encima); `land.png` es la ilustración del
+paisaje que aparece al abrir el sello. Ver la sección "Portada animada" en
+el README principal.

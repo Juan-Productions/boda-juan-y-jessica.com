@@ -7,9 +7,12 @@ Invitación web de una sola página, con cuenta regresiva, música de fondo y co
 ```
 index.html                     página principal (autocontenida)
 assets/
+  intro-cover.jsx              portada animada (sello + paisaje), ver abajo
   vendor/                      React, ReactDOM y el runtime de la plantilla
   fonts/                       tipografías (Cormorant Garamond, Lora) en woff2
-  audio/musica.mp3             música de fondo
+  photos/                      fotos del sitio + assets de la portada animada
+  audio/musica.mp3             música de fondo (después de la portada)
+  audio/Intro portada sonido.mp3   audio de la portada animada
 ```
 
 ## Ejecutar en local
@@ -49,6 +52,36 @@ derecho está bloqueado sobre ellas — son trabas básicas contra la descarga
 casual, **no protección real**: cualquiera puede sacar una captura de
 pantalla o abrir las herramientas de desarrollador del navegador. No subas
 fotos que no quieras que alguien pueda llegar a guardar de esa forma.
+
+## Portada animada
+
+Antes de la invitación en sí, el sitio muestra una portada animada
+(`assets/intro-cover.jsx`, un componente React/JSX cargado vía
+`<x-import>` — el runtime de la plantilla trae Babel y lo transforma en el
+navegador): un sello de lacre sobre papel que, al tocarlo, se abre y da
+paso a una ilustración animada (paisaje, mariposas, textos, nombres).
+
+- **Reloj propio**: el tiempo no avanza hasta el primer toque (los
+  navegadores bloquean el audio sin un gesto del usuario), y queda limitado
+  a saltos chicos por fotograma para que, si el celular bloquea la pestaña
+  un momento, la animación se pause en vez de "saltar" al volver.
+- **Sonido**: al tocar para empezar, suena `assets/audio/Intro portada
+  sonido.mp3`. Al tocar **"Más información"** (aparece a partir del
+  segundo 22, editable con `MORE_INFO_AT` en `intro-cover.jsx`), esa pista
+  se detiene y arranca la música de fondo normal del sitio
+  (`assets/audio/musica.mp3`) — llama a `window.__triggerOpenInvitation()`,
+  que expone el componente principal de `index.html`.
+- **Marcas de tiempo de las escenas** (`CUES` en `intro-cover.jsx`): Sello
+  0s, Apertura 5s, Paisaje 8s, Historia 10s, Acompañas 15s, Destello 19s,
+  Nombres 20.5s, Cierre 54.5s (total 57s, después vuelve a empezar en
+  loop). Para retocar el diseño/tiempos con más comodidad (con panel de
+  ajustes visual) se puede volver a abrir el proyecto original en Claude
+  Design y exportar de nuevo — este archivo es una adaptación manual para
+  que funcione standalone en el sitio publicado, sin ese editor.
+- Imágenes: `assets/photos/seal_blank.png` (el sello, sin iniciales — el
+  "J&J" se dibuja aparte en HTML/CSS, así que cambiar las iniciales es
+  editar el texto en `intro-cover.jsx`, no la imagen) y
+  `assets/photos/land.png` (la ilustración del paisaje).
 
 ## Efecto de scroll (reveal on scroll)
 
