@@ -297,6 +297,17 @@ function IntroCover() {
     fadeOutAndStop(introAudioRef.current, 900);
     if (typeof window.__triggerOpenInvitation === 'function') window.__triggerOpenInvitation();
     clock.setRevealed(true);
+    // Deja que se vea el desvanecimiento (opacity 0.6s más un margen)
+    // antes de pedirle a index.html que saque el <x-import> del DOM del
+    // todo — sacarlo de golpe ahora cortaría la transición a la mitad.
+    // Es necesario sacarlo (no alcanza con pointer-events:none puesto a
+    // mano): el host que crea <x-import> se vuelve a renderizar cada vez
+    // que cambia el estado de la página principal (cualquier botón que
+    // se toque después) y eso pisa ese pointer-events, dejando esta
+    // portada "invisible pero todavía ahí" tapando clics.
+    setTimeout(function () {
+      if (typeof window.__removeIntroCover === 'function') window.__removeIntroCover();
+    }, 700);
   }
 
   React.useEffect(function () {
