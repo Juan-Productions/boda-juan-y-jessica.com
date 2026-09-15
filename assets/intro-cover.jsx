@@ -26,6 +26,11 @@ var CUES = {
   Acompanas: 15, Destello: 19, Nombres: 20.5, Cierre: 54.5,
 };
 var COMPOSITION_TOTAL = 57;
+// Dónde se congela el reloj si nadie tocó "Más información" — justo
+// antes de que arranque el fundido a negro de Cierre (Cierre+0.2), así
+// se queda mostrando el paisaje con los nombres y el botón bien
+// visibles, no una pantalla negra.
+var HOLD_AT = CUES.Cierre;
 
 var Easing = {
   linear: function (t) { return t; },
@@ -250,8 +255,10 @@ function useIntroClock() {
   var T = tState[0], setT = tState[1];
   var rafRef = React.useRef(null);
   var lastRef = React.useRef(null);
+  var frozenRef = React.useRef(false);
   React.useEffect(function () {
     if (!started || revealed) return;
+    frozenRef.current = false;
     function step(ts) {
       if (lastRef.current == null) lastRef.current = ts;
       // Clamp dt: a backgrounded/throttled tab (screen lock, app switch)
@@ -262,10 +269,15 @@ function useIntroClock() {
       lastRef.current = ts;
       setT(function (t) {
         var next = t + dt;
-        if (next >= COMPOSITION_TOTAL) next = next % COMPOSITION_TOTAL;
+        // No loop: si nadie tocó "Más información", la portada no debe
+        // volver a mostrarse cerrándose/abriéndose sola — se congela en
+        // HOLD_AT (ya con el paisaje, los nombres y el botón a la vista)
+        // y se queda ahí en silencio (el audio, sin loop, ya terminó
+        // solo) esperando el toque.
+        if (next >= HOLD_AT) { next = HOLD_AT; frozenRef.current = true; }
         return next;
       });
-      rafRef.current = requestAnimationFrame(step);
+      if (!frozenRef.current) rafRef.current = requestAnimationFrame(step);
     }
     rafRef.current = requestAnimationFrame(step);
     return function () {

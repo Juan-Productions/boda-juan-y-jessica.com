@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <script>
 (function () {
-  var BUILD_VERSION = "2026-09-15.5";
+  var BUILD_VERSION = "2026-09-15.6";
   try {
     if (sessionStorage.getItem('dc_reloaded_for_version')) return;
     fetch('version.json?_=' + Date.now(), { cache: 'no-store' })
@@ -23,16 +23,16 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="build-version" content="2026-09-15.5">
+<meta name="build-version" content="2026-09-15.6">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Juan Daniel &amp; Jessica — Invitación de boda</title>
 <script>
   window.__resources = {
-    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-09-15.5",
-    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-09-15.5"
+    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-09-15.6",
+    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-09-15.6"
   };
 </script>
-<script src="assets/vendor/dc-runtime.js?v=2026-09-15.5"></script>
+<script src="assets/vendor/dc-runtime.js?v=2026-09-15.6"></script>
 </head>
 <body>
 <x-dc>
@@ -439,6 +439,13 @@
     overflow: hidden;
     background: rgba(182,130,53,0.08);
     box-shadow: 0 10px 32px rgba(32,31,29,0.14);
+    /* Deja que el navegador siga scrolleando la página verticalmente;
+       el gesto horizontal (deslizar para cambiar de foto) lo maneja JS. */
+    touch-action: pan-y;
+    cursor: grab;
+  }
+  .carousel-wrap:active {
+    cursor: grabbing;
   }
   .carousel-slide {
     position: absolute;
@@ -793,7 +800,7 @@
   <div class="reveal" style="padding:0 32px 56px">
     <span class="eyebrow">Momentos</span>
     <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;text-align:center;margin:0 0 24px">Galería</h2>
-    <div class="carousel-wrap">
+    <div class="carousel-wrap" sc-camel-on-pointer-down="{{ onCarouselPointerDown }}" sc-camel-on-pointer-move="{{ onCarouselPointerMove }}" sc-camel-on-pointer-up="{{ onCarouselPointerUp }}">
       <sc-for list="{{ gallerySlides }}" as="p" hint-placeholder-count="3">
         <div class="carousel-slide" sc-camel-on-click="{{ p.open }}" style="opacity:{{ p.opacity }};z-index:{{ p.z }}">
           <img class="carousel-img" src="{{ p.src }}" alt="{{ p.alt }}" draggable="false">
@@ -824,7 +831,7 @@
     </div>
     <span class="eyebrow">RSVP</span>
     <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;text-align:center;margin:0 0 8px">Confirma tu asistencia</h2>
-    <p style="text-align:center;font-size:13px;opacity:0.65;margin:0 0 36px">Por favor confirma antes del 1 octubre</p>
+    <p style="text-align:center;font-size:13px;opacity:0.65;margin:0 0 36px">Por favor confirma antes del 11 octubre</p>
 
     <sc-if value="{{ isSearch }}" hint-placeholder-val="{{ true }}">
       <div style="max-width:480px;margin:0 auto">
@@ -963,7 +970,7 @@ class Component extends DCLogic {
   componentDidMount() {
     var self = this;
     this.timer = setInterval(function () { self.setState({ now: Date.now() }); }, 1000);
-    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-09-15.5");
+    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-09-15.6");
     this.audio.loop = true;
     this.audio.volume = 0.5;
     this.audio.addEventListener("error", function () { self.setState({ audioReady: false, musicOn: false }); });
@@ -1021,6 +1028,35 @@ class Component extends DCLogic {
   openLightbox(photo) {
     document.documentElement.style.overflow = "hidden";
     this.setState({ lightboxImage: photo });
+  }
+
+  // Deslizar el carrusel: un gesto horizontal de más de 40px cambia de
+  // foto al toque (sin esperar los GALLERY_INTERVAL_MS del avance
+  // automático, que sigue corriendo aparte). onCarouselPointerMove solo
+  // marca si hubo arrastre real, para no confundir un swipe con un tap
+  // y abrir el lightbox por error justo después de deslizar.
+  onCarouselPointerDown(e) {
+    this._swipeStartX = e.clientX;
+    this._swipeMoved = false;
+  }
+
+  onCarouselPointerMove(e) {
+    if (this._swipeStartX == null) return;
+    if (Math.abs(e.clientX - this._swipeStartX) > 10) this._swipeMoved = true;
+  }
+
+  onCarouselPointerUp(e) {
+    if (this._swipeStartX == null) return;
+    var dx = e.clientX - this._swipeStartX;
+    var moved = this._swipeMoved;
+    this._swipeStartX = null;
+    this._swipeMoved = false;
+    if (!moved || Math.abs(dx) < 40) return;
+    this._suppressNextSlideClick = true;
+    var len = GALLERY_PHOTOS.length;
+    var dir = dx < 0 ? 1 : -1; // deslizar a la izquierda = siguiente foto
+    var next = ((this.state.carouselIndex + dir) % len + len) % len;
+    this.setState({ carouselIndex: next });
   }
 
   closeLightbox() {
@@ -1109,7 +1145,10 @@ class Component extends DCLogic {
           alt: p.alt,
           opacity: i === self.state.carouselIndex ? "1" : "0",
           z: i === self.state.carouselIndex ? "2" : "1",
-          open: function () { self.openLightbox({ src: p.src, alt: p.alt }); }
+          open: function () {
+            if (self._suppressNextSlideClick) { self._suppressNextSlideClick = false; return; }
+            self.openLightbox({ src: p.src, alt: p.alt });
+          }
         };
       }),
       galleryDots: GALLERY_PHOTOS.map(function (p, i) {
@@ -1118,6 +1157,9 @@ class Component extends DCLogic {
           goTo: function () { self.setState({ carouselIndex: i }); }
         };
       }),
+      onCarouselPointerDown: function (e) { self.onCarouselPointerDown(e); },
+      onCarouselPointerMove: function (e) { self.onCarouselPointerMove(e); },
+      onCarouselPointerUp: function (e) { self.onCarouselPointerUp(e); },
       versePhotoSrc: VERSE_PHOTO.src,
       versePhotoAlt: VERSE_PHOTO.alt,
       openVersePhoto: function () { self.openLightbox({ src: VERSE_PHOTO.src, alt: VERSE_PHOTO.alt }); },
