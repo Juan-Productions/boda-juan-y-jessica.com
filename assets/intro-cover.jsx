@@ -17,11 +17,12 @@ var LAND_IMG = './assets/photos/land.png';
 var INTRO_AUDIO_SRC = './assets/audio/Intro portada sonido.mp3';
 var MORE_INFO_AT = 22;
 
-// Marcas de tiempo (segundo en que empieza cada escena), calculadas a mano
-// a partir de las duraciones originales (Sello 5, Apertura 3, Paisaje 2,
-// Historia 5, Acompañas 4, Destello 1.5, Nombres 34, Cierre 2.5).
+// Marcas de tiempo (segundo en que empieza cada escena). Apertura se
+// adelantó a propósito (era 5) para que el sello se abra a los 2-3
+// segundos de tocar, en vez de ~7 — el resto de las escenas (Historia en
+// adelante) quedan en su tiempo original.
 var CUES = {
-  Sello: 0, Apertura: 5, Paisaje: 8, Historia: 10,
+  Sello: 0, Apertura: 0.3, Paisaje: 8, Historia: 10,
   Acompanas: 15, Destello: 19, Nombres: 20.5, Cierre: 54.5,
 };
 var COMPOSITION_TOTAL = 57;
@@ -42,6 +43,23 @@ var Easing = {
 };
 
 function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+// Baja el volumen de `audio` a 0 en `ms` y lo pausa — para el crossfade
+// con la música principal al tocar "Más información" (ver también
+// fadeAudioIn en index.html, que sube musica.mp3 al mismo tiempo).
+function fadeOutAndStop(audio, ms) {
+  if (!audio) return;
+  var startVol = audio.volume;
+  var startTime = null;
+  function step(ts) {
+    if (startTime == null) startTime = ts;
+    var t = clamp((ts - startTime) / ms, 0, 1);
+    audio.volume = startVol * (1 - t);
+    if (t < 1) requestAnimationFrame(step);
+    else { try { audio.pause(); } catch (e) {} }
+  }
+  requestAnimationFrame(step);
+}
 
 function interpolate(input, output, ease) {
   ease = ease || Easing.linear;
@@ -276,9 +294,7 @@ function IntroCover() {
 
   function handleMoreInfo(e) {
     if (e) e.stopPropagation();
-    if (introAudioRef.current) {
-      try { introAudioRef.current.pause(); } catch (e2) {}
-    }
+    fadeOutAndStop(introAudioRef.current, 900);
     if (typeof window.__triggerOpenInvitation === 'function') window.__triggerOpenInvitation();
     clock.setRevealed(true);
   }

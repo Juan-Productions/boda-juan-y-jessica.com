@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <script>
 (function () {
-  var BUILD_VERSION = "2026-09-15.2";
+  var BUILD_VERSION = "2026-09-15.3";
   try {
     if (sessionStorage.getItem('dc_reloaded_for_version')) return;
     fetch('version.json?_=' + Date.now(), { cache: 'no-store' })
@@ -23,16 +23,16 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="build-version" content="2026-09-15.2">
+<meta name="build-version" content="2026-09-15.3">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Juan Daniel &amp; Jessica — Invitación de boda</title>
 <script>
   window.__resources = {
-    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-09-15.2",
-    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-09-15.2"
+    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-09-15.3",
+    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-09-15.3"
   };
 </script>
-<script src="assets/vendor/dc-runtime.js?v=2026-09-15.2"></script>
+<script src="assets/vendor/dc-runtime.js?v=2026-09-15.3"></script>
 </head>
 <body>
 <x-dc>
@@ -957,7 +957,7 @@ class Component extends DCLogic {
   componentDidMount() {
     var self = this;
     this.timer = setInterval(function () { self.setState({ now: Date.now() }); }, 1000);
-    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-09-15.2");
+    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-09-15.3");
     this.audio.loop = true;
     this.audio.volume = 0.5;
     this.audio.addEventListener("error", function () { self.setState({ audioReady: false, musicOn: false }); });
@@ -1015,9 +1015,32 @@ class Component extends DCLogic {
     var self = this;
     document.documentElement.style.overflow = "";
     if (this.audio) {
-      this.audio.play().then(function () { self.setState({ musicOn: true }); }).catch(function () {});
+      this.audio.volume = 0;
+      this.audio.play().then(function () {
+        self.setState({ musicOn: true });
+        self.fadeAudioTo(0.5, 1200);
+      }).catch(function () {});
     }
     this.setState({ opened: true });
+  }
+
+  // Sube (o baja) this.audio.volume hasta `target` en `ms` — crossfade con
+  // el audio de la portada animada (assets/intro-cover.jsx hace lo mismo
+  // en sentido contrario al tocar "Más información").
+  fadeAudioTo(target, ms) {
+    var self = this;
+    var audio = this.audio;
+    if (!audio) return;
+    var startVol = audio.volume;
+    var startTime = null;
+    function step(ts) {
+      if (!self.audio || self.audio !== audio) return;
+      if (startTime == null) startTime = ts;
+      var t = Math.min(Math.max((ts - startTime) / ms, 0), 1);
+      audio.volume = startVol + (target - startVol) * t;
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
   }
 
   findMatches(q) {
