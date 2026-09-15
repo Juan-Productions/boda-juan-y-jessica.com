@@ -289,6 +289,22 @@ function IntroCover() {
     };
   }, []);
 
+  // <x-import> mounts this component inside its own host element
+  // (position:fixed; inset:0; the style given on the <x-import> tag in
+  // index.html) — that host is an ANCESTOR we don't render, so setting
+  // pointer-events:none on our own root div only stops clicks from
+  // reaching things INSIDE it; the host itself, full-viewport and above
+  // everything, would keep swallowing every click on the real page below
+  // (e.g. "Ver mapa") even after we've faded out. Reach up and toggle the
+  // host directly once revealed.
+  var rootRef = React.useRef(null);
+  React.useEffect(function () {
+    var el = rootRef.current;
+    var host = el && el.parentElement;
+    if (!host) return;
+    host.style.pointerEvents = revealed ? 'none' : 'auto';
+  }, [revealed]);
+
   var scaleState = React.useState(1);
   var scale = scaleState[0], setScale = scaleState[1];
   React.useEffect(function () {
@@ -338,7 +354,7 @@ function IntroCover() {
   var shadow = '0 0 3px rgba(0,0,0,1), 0 2px 5px rgba(0,0,0,1), 0 3px 14px rgba(0,0,0,0.98), 0 0 30px rgba(0,0,0,0.9), 0 0 64px rgba(0,0,0,0.75), 0 0 110px rgba(0,0,0,0.6)';
 
   return (
-    <div style={{
+    <div ref={rootRef} style={{
       position: 'fixed', inset: 0, zIndex: 100, overflow: 'hidden', background: '#e8dcc6',
       opacity: revealed ? 0 : 1, pointerEvents: revealed ? 'none' : 'auto',
       transition: 'opacity 0.6s ease',
