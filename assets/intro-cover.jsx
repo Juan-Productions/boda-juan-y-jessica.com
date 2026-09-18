@@ -434,18 +434,18 @@ function IntroCover() {
           <div style={{ position: 'absolute', inset: 0, background: '#fdfdfb', opacity: clamp(whiteOp, 0, 1), pointerEvents: 'none' }} />
 
           <div style={{ position: 'absolute', left: 0, right: 0, top: 540, textAlign: 'center', color: '#fffdf7', opacity: blockA, textShadow: shadow }}>
-            <Line family={serif} size={50} text={'Porque eres parte\nde nuestra historia...'} style={{ fontStyle: 'italic', fontWeight: 500, letterSpacing: '0.01em' }} />
+            <Line family={serif} size={58} text={'Porque eres parte\nde nuestra historia...'} style={{ fontStyle: 'italic', fontWeight: 700, letterSpacing: '0.01em' }} />
           </div>
           <div style={{ position: 'absolute', left: 0, right: 0, top: 540, textAlign: 'center', color: '#fffdf7', opacity: blockB, textShadow: shadow }}>
-            <Line family={serif} size={46} text={'...queremos que nos acompañes\nen nuestro gran día'} style={{ fontStyle: 'italic', fontWeight: 500, letterSpacing: '0.01em' }} />
+            <Line family={serif} size={54} text={'...queremos que nos acompañes\nen nuestro gran día'} style={{ fontStyle: 'italic', fontWeight: 700, letterSpacing: '0.01em' }} />
           </div>
 
           <Sparkle p={sparkP} />
 
           <div style={{ position: 'absolute', left: 0, right: 0, top: 548, textAlign: 'center', color: '#fffdf7', textShadow: shadow }}>
-            <div style={{ fontFamily: serif, fontStyle: 'italic', fontSize: 40, letterSpacing: '0.05em', opacity: kickOp }}>{kicker}</div>
+            <div style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 700, fontSize: 46, letterSpacing: '0.05em', opacity: kickOp }}>{kicker}</div>
             <div style={{ fontFamily: script, fontSize: 86, lineHeight: 1.32, opacity: nameOp, transform: 'translateY(' + nameY + 'px)', whiteSpace: 'nowrap' }}>{names}</div>
-            <div style={{ fontFamily: serif, fontSize: 42, letterSpacing: '0.03em', opacity: dateOp, marginTop: 10 }}>{date}</div>
+            <div style={{ fontFamily: serif, fontWeight: 700, fontSize: 48, letterSpacing: '0.03em', opacity: dateOp, marginTop: 10 }}>{date}</div>
           </div>
 
           {!cardGone && (
