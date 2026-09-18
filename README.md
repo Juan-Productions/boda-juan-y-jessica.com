@@ -33,7 +33,7 @@ y entra a `http://localhost:5173`.
 
 ## Editar contenido
 
-- **Lista de invitados y hoja de confirmación**: dentro de `index.html`, busca el bloque `<script type="text/x-dc">` al final del archivo. Ahí están `GUEST_LIST` (familias y cupos) y `SHEET_ENDPOINT` (URL del Web App de Google Apps Script que recibe las confirmaciones).
+- **Lista de invitados y hoja de confirmación**: la lista vive en la hoja de Google (pestaña con las columnas `FAMILIA`, `TITULAR`, `CUPOS`), no en este repo. `SHEET_ENDPOINT` (en el bloque `<script type="text/x-dc">` al final de `index.html`) es la URL del Web App de Google Apps Script: con `POST` recibe las confirmaciones y con `GET ?q=texto` devuelve solo las familias que coinciden (mínimo 3 letras, máximo 8 resultados). Para agregar o quitar invitados, editá la hoja — no hace falta tocar el sitio. Si cambiás el código del script, en "Implementar → Administrar implementaciones" editá la implementación existente y elegí "Nueva versión" para que la URL no cambie.
 - **Fecha de la boda**: la constante `target` dentro de `renderVals()` en ese mismo script (`new Date(2026, 9, 24, 15, 30, 0)`).
 - **Fotos** (portada, versículo, galería): todas son `<img>` normales — funcionan en cualquier hosting, no hay que editarlas desde ningún editor especial. Instrucciones y nombres exactos de archivo en [assets/photos/README.md](assets/photos/README.md); básicamente: subís los archivos con esos nombres a `assets/photos/` y listo.
 - **Foto de portada**: es estática a propósito — no tiene botón de reemplazo, ni se puede ampliar/hacer clic (a diferencia de las demás fotos, que sí abren en grande al tocarlas).
@@ -42,7 +42,7 @@ y entra a `http://localhost:5173`.
 ## Galería con carrusel
 
 La sección "Galería" recorre automáticamente las fotos de `GALLERY_PHOTOS`
-(definidas cerca del final de `index.html`, junto a `GUEST_LIST`) cada
+(definidas cerca del final de `index.html`, junto a `SHEET_ENDPOINT`) cada
 `GALLERY_INTERVAL_MS` (4.5s por defecto). Tocar/cliquear una foto la abre en
 grande sobre un fondo difuminado (lightbox); se cierra con la X, tocando
 afuera, o con Escape.

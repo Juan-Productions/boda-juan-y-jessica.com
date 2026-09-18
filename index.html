@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <script>
 (function () {
-  var BUILD_VERSION = "2026-09-18.6";
+  var BUILD_VERSION = "2026-09-18.7";
   try {
     if (sessionStorage.getItem('dc_reloaded_for_version')) return;
     fetch('version.json?_=' + Date.now(), { cache: 'no-store' })
@@ -23,16 +23,16 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="build-version" content="2026-09-18.6">
+<meta name="build-version" content="2026-09-18.7">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Juan Daniel &amp; Jessica — Invitación de boda</title>
 <script>
   window.__resources = {
-    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-09-18.6",
-    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-09-18.6"
+    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-09-18.7",
+    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-09-18.7"
   };
 </script>
-<script src="assets/vendor/dc-runtime.js?v=2026-09-18.6"></script>
+<script src="assets/vendor/dc-runtime.js?v=2026-09-18.7"></script>
 </head>
 <body>
 <x-dc>
@@ -876,7 +876,7 @@
         <div style="display:flex;gap:10px;align-items:flex-start">
           <input type="text" value="{{ query }}" sc-camel-on-change="{{ setQuery }}" sc-camel-on-key-down="{{ onSearchKey }}" placeholder="Ej. Andrés Ruz" style="flex:1;min-height:40px;padding:8px 10px;font:inherit;font-size:14px;color:#201f1d;background:transparent;border:1px solid rgba(32,31,29,0.16);border-radius:4px;box-sizing:border-box">
           <button class="btn btn-solid-hover" sc-camel-on-click="{{ doSearch }}" style="cursor:pointer;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:15px;color:#7d5411;background:transparent;border:1px solid #b68235;padding:11px 18px;border-radius:4px;white-space:nowrap">
-            Buscar
+            {{ searchLabel }}
           </button>
         </div>
         <p style="font-size:13px;color:#7d5411;margin:12px 0 0;min-height:18px">{{ searchError }}</p>
@@ -983,15 +983,10 @@ var GALLERY_INTERVAL_MS = 4500;
 // Poné el archivo en assets/photos/ con este nombre (o cambiá la ruta acá).
 var VERSE_PHOTO = { src: "./assets/photos/versiculo.jpg", alt: "Juan Daniel y Jessica" };
 
-var GUEST_LIST = [
-  { familia: "Familia Ruz Pérez", titular: "Andrés Ruz", cupos: 4 },
-  { familia: "Familia Gómez Salazar", titular: "Laura Gómez", cupos: 2 },
-  { familia: "Familia Restrepo", titular: "Carlos Restrepo", cupos: 3 },
-  { familia: "Marcela Ochoa", titular: "Marcela Ochoa", cupos: 1 },
-  { familia: "Familia Duarte", titular: "Felipe Duarte", cupos: 5 }
-];
-
-// Pega aquí la URL del Web App de Google Apps Script (ver instrucciones).
+// URL del Web App de Google Apps Script. Recibe las confirmaciones (doPost) y
+// también responde la búsqueda de invitados (doGet, ?q=...) leyendo las
+// columnas FAMILIA / TITULAR / CUPOS de la hoja, así la lista real no vive
+// en este archivo público.
 var SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbyNwdMJ8cIyb33eAnW8T0tRSNSUS9xiqdbqvoFeYQ0XGZxNUuSRs7EdbKWj7lsqATSU1w/exec";
 
 function normalize(s) {
@@ -1001,13 +996,13 @@ function normalize(s) {
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { step: "search", query: "", searchError: "", family: null, members: [], matches: [], message: "", now: Date.now(), musicOn: false, audioReady: false, opened: false, introDone: false, carouselIndex: 0, galleryRatio: {}, lightboxImage: null };
+    this.state = { step: "search", query: "", searchError: "", family: null, members: [], matches: [], message: "", now: Date.now(), musicOn: false, audioReady: false, opened: false, introDone: false, carouselIndex: 0, galleryRatio: {}, searching: false, lightboxImage: null };
   }
 
   componentDidMount() {
     var self = this;
     this.timer = setInterval(function () { self.setState({ now: Date.now() }); }, 1000);
-    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-09-18.6");
+    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-09-18.7");
     this.audio.loop = true;
     this.audio.volume = 0.5;
     this.audio.addEventListener("error", function () { self.setState({ audioReady: false, musicOn: false }); });
@@ -1146,11 +1141,15 @@ class Component extends DCLogic {
   }
 
   findMatches(q) {
-    var n = normalize(q);
-    if (!n) return [];
-    return GUEST_LIST.filter(function (g) {
-      return normalize(g.titular).indexOf(n) !== -1 || normalize(g.familia).indexOf(n) !== -1;
-    });
+    if (!SHEET_ENDPOINT) return Promise.reject(new Error("sin SHEET_ENDPOINT"));
+    return fetch(SHEET_ENDPOINT + "?q=" + encodeURIComponent(q.trim()))
+      .then(function (r) { return r.json(); })
+      .then(function (list) {
+        if (!Array.isArray(list)) throw new Error("respuesta inválida");
+        return list.map(function (g) {
+          return { familia: g.familia, titular: g.titular, cupos: Math.max(1, Number(g.cupos) || 1) };
+        });
+      });
   }
 
   pickFamily(g) {
@@ -1160,13 +1159,28 @@ class Component extends DCLogic {
   }
 
   search() {
-    var found = this.findMatches(this.state.query);
-    if (found.length === 0) {
-      this.setState({ searchError: "No encontramos tu nombre en la lista. Escríbenos y lo revisamos.", matches: [] });
+    if (this.state.searching) return;
+    var self = this;
+    var q = this.state.query.trim();
+    if (normalize(q).length < 3) {
+      this.setState({ searchError: "Escribe al menos 3 letras de tu nombre o apellido.", matches: [] });
       return;
     }
-    if (found.length === 1) { this.pickFamily(found[0]); return; }
-    this.setState({ step: "choose", matches: found, searchError: "" });
+    this.setState({ searching: true, searchError: "" });
+    this.findMatches(q).then(function (found) {
+      // Si mientras esperaba cambió el texto (o se reinició), se descarta.
+      if (self.state.query.trim() !== q) { self.setState({ searching: false }); return; }
+      if (found.length === 0) {
+        self.setState({ searching: false, searchError: "No encontramos tu nombre en la lista. Escríbenos y lo revisamos.", matches: [] });
+      } else if (found.length === 1) {
+        self.setState({ searching: false });
+        self.pickFamily(found[0]);
+      } else {
+        self.setState({ searching: false, step: "choose", matches: found, searchError: "" });
+      }
+    }).catch(function () {
+      self.setState({ searching: false, searchError: "No pudimos consultar la lista en este momento. Intenta de nuevo en unos segundos." });
+    });
   }
 
   updateMember(i, patch) {
@@ -1253,6 +1267,7 @@ class Component extends DCLogic {
       isDone: this.state.step === "done",
       query: this.state.query,
       searchError: this.state.searchError,
+      searchLabel: this.state.searching ? "Buscando…" : "Buscar",
       message: this.state.message,
       familyName: fam ? fam.familia : "",
       cuposLabel: fam ? (fam.cupos === 1 ? "1 cupo reservado" : fam.cupos + " cupos reservados") : "",
