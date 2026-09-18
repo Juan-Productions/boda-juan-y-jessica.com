@@ -83,6 +83,23 @@ paso a una ilustración animada (paisaje, mariposas, textos, nombres).
   editar el texto en `intro-cover.jsx`, no la imagen) y
   `assets/photos/land.png` (la ilustración del paisaje).
 
+## Itinerario
+
+La sección "Itinerario del día" es un póster ilustrado (`assets/photos/
+itinerario-art.png`, 1225×2399 px) que se dibuja a ese tamaño y se reduce
+solo al ancho del contenedor (con `zoom`, ver el script al final de
+`index.html`). Al hacer scroll, la ilustración se revela de arriba hacia
+abajo y cada horario entra desde su lado; se desactiva solo con
+`prefers-reduced-motion`.
+
+Para cambiar los horarios o el texto de cada parada, editá los bloques
+`data-stop` dentro de `<div id="itin">` en `index.html` — cada uno es un
+`<p>` con la hora y otro con el nombre del momento. `data-side` controla
+desde qué lado entra al hacer scroll (`1` derecha, `-1` izquierda, `0`
+centro). La cuenta regresiva de la portada usa el mismo horario de la
+ceremonia (`target` dentro de `renderVals()`); si cambia la hora de la
+ceremonia, actualizá los dos lugares.
+
 ## Efecto de scroll (reveal on scroll)
 
 Las secciones principales (introducción, fecha/mapa, cuenta regresiva, itinerario, código de vestimenta, foto, RSVP y pie) tienen la clase `reveal`. Un `IntersectionObserver` (al final de `index.html`) les agrega la clase `is-visible` cuando entran en pantalla, disparando una transición de opacidad + desplazamiento definida en el bloque `<style>` del `<head>`.
