@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <script>
 (function () {
-  var BUILD_VERSION = "2026-09-18.7";
+  var BUILD_VERSION = "2026-09-18.9";
   try {
     if (sessionStorage.getItem('dc_reloaded_for_version')) return;
     fetch('version.json?_=' + Date.now(), { cache: 'no-store' })
@@ -23,16 +23,16 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="build-version" content="2026-09-18.7">
+<meta name="build-version" content="2026-09-18.9">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Juan Daniel &amp; Jessica — Invitación de boda</title>
 <script>
   window.__resources = {
-    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-09-18.7",
-    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-09-18.7"
+    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-09-18.9",
+    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-09-18.9"
   };
 </script>
-<script src="assets/vendor/dc-runtime.js?v=2026-09-18.7"></script>
+<script src="assets/vendor/dc-runtime.js?v=2026-09-18.9"></script>
 </head>
 <body>
 <x-dc>
@@ -987,7 +987,7 @@ var VERSE_PHOTO = { src: "./assets/photos/versiculo.jpg", alt: "Juan Daniel y Je
 // también responde la búsqueda de invitados (doGet, ?q=...) leyendo las
 // columnas FAMILIA / TITULAR / CUPOS de la hoja, así la lista real no vive
 // en este archivo público.
-var SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbyNwdMJ8cIyb33eAnW8T0tRSNSUS9xiqdbqvoFeYQ0XGZxNUuSRs7EdbKWj7lsqATSU1w/exec";
+var SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxfWbrKlluNf8Mt0E105hhYgZU9W6K88dV96C1s1SjHdwWoKk-ogZCzr3kq9HB2rmuA/exec";
 
 function normalize(s) {
   return (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
@@ -1002,7 +1002,7 @@ class Component extends DCLogic {
   componentDidMount() {
     var self = this;
     this.timer = setInterval(function () { self.setState({ now: Date.now() }); }, 1000);
-    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-09-18.7");
+    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-09-18.9");
     this.audio.loop = true;
     this.audio.volume = 0.5;
     this.audio.addEventListener("error", function () { self.setState({ audioReady: false, musicOn: false }); });
@@ -1142,10 +1142,24 @@ class Component extends DCLogic {
 
   findMatches(q) {
     if (!SHEET_ENDPOINT) return Promise.reject(new Error("sin SHEET_ENDPOINT"));
-    return fetch(SHEET_ENDPOINT + "?q=" + encodeURIComponent(q.trim()))
-      .then(function (r) { return r.json(); })
+    var url = SHEET_ENDPOINT + "?q=" + encodeURIComponent(q.trim());
+    function intento() {
+      var ctrl = typeof AbortController === "function" ? new AbortController() : null;
+      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 10000);
+      return fetch(url, ctrl ? { signal: ctrl.signal } : undefined)
+        .then(function (r) { return r.json(); })
+        .then(function (list) {
+          clearTimeout(timer);
+          if (!Array.isArray(list)) throw new Error("respuesta inválida");
+          return list;
+        }, function (e) { clearTimeout(timer); throw e; });
+    }
+    // Apps Script a veces tarda mucho o directamente no responde (arranque
+    // en frío): cada intento se corta a los 10s y se reintenta una vez, así
+    // el botón nunca queda en "Buscando…" para siempre.
+    return intento()
+      .catch(function () { return new Promise(function (res) { setTimeout(res, 700); }).then(intento); })
       .then(function (list) {
-        if (!Array.isArray(list)) throw new Error("respuesta inválida");
         return list.map(function (g) {
           return { familia: g.familia, titular: g.titular, cupos: Math.max(1, Number(g.cupos) || 1) };
         });
