@@ -48,3 +48,7 @@ día" (flores y anillos, copas, mesa servida, pareja bailando, música,
 tornamesa, luna y cama). Los horarios y el texto de cada parada están en
 `index.html`, no en la imagen — ver la sección "Itinerario" en el README
 principal.
+
+`vestimenta-art.png` es el dibujo de línea (pareja bailando e invitados
+brindando bajo un arco de flores) debajo de "Código de vestimenta:
+Formal".

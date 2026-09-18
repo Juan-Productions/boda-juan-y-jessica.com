@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <script>
 (function () {
-  var BUILD_VERSION = "2026-09-18.2";
+  var BUILD_VERSION = "2026-09-18.3";
   try {
     if (sessionStorage.getItem('dc_reloaded_for_version')) return;
     fetch('version.json?_=' + Date.now(), { cache: 'no-store' })
@@ -23,16 +23,16 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="build-version" content="2026-09-18.2">
+<meta name="build-version" content="2026-09-18.3">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Juan Daniel &amp; Jessica — Invitación de boda</title>
 <script>
   window.__resources = {
-    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-09-18.2",
-    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-09-18.2"
+    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js?v=2026-09-18.3",
+    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js?v=2026-09-18.3"
   };
 </script>
-<script src="assets/vendor/dc-runtime.js?v=2026-09-18.2"></script>
+<script src="assets/vendor/dc-runtime.js?v=2026-09-18.3"></script>
 </head>
 <body>
 <x-dc>
@@ -433,11 +433,16 @@
   .carousel-wrap {
     position: relative;
     width: 100%;
-    height: 320px;
+    /* La relación de aspecto real de la foto activa (ver
+       onGalleryImgLoad/carouselRatio): así se ve completa, sin recortar,
+       igual que al abrirla en grande. */
+    aspect-ratio: var(--carousel-ratio, 4 / 3);
+    max-height: 640px;
     border-radius: 10px;
     overflow: hidden;
     background: rgba(182,130,53,0.08);
     box-shadow: 0 10px 32px rgba(32,31,29,0.14);
+    transition: aspect-ratio 0.4s ease;
     /* Deja que el navegador siga scrolleando la página verticalmente;
        el gesto horizontal (deslizar para cambiar de foto) lo maneja JS. */
     touch-action: pan-y;
@@ -455,7 +460,7 @@
   .carousel-img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
   }
   .carousel-img, .lightbox-img, .verse-photo img, .static-photo {
@@ -801,6 +806,7 @@
     </div>
     <div style="font-family:'Lora',serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#201f1d;opacity:0.55;margin-bottom:8px">Código de vestimenta</div>
     <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px">Formal</div>
+    <img class="static-photo" src="assets/photos/vestimenta-art.png" alt="Ilustración de la boda: la pareja bailando junto a sus invitados brindando bajo un arco de flores" draggable="false" style="display:block;width:100%;max-width:480px;margin:28px auto 0">
   </div>
 
   <div class="divider-ornament" style="margin:0 32px 48px"><span></span></div>
@@ -836,10 +842,10 @@
   <div class="reveal" style="padding:0 32px 56px">
     <span class="eyebrow">Momentos</span>
     <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;text-align:center;margin:0 0 24px">Galería</h2>
-    <div class="carousel-wrap" sc-camel-on-pointer-down="{{ onCarouselPointerDown }}" sc-camel-on-pointer-move="{{ onCarouselPointerMove }}" sc-camel-on-pointer-up="{{ onCarouselPointerUp }}">
+    <div class="carousel-wrap" style="--carousel-ratio:{{ carouselRatio }}" sc-camel-on-pointer-down="{{ onCarouselPointerDown }}" sc-camel-on-pointer-move="{{ onCarouselPointerMove }}" sc-camel-on-pointer-up="{{ onCarouselPointerUp }}">
       <sc-for list="{{ gallerySlides }}" as="p" hint-placeholder-count="3">
         <div class="carousel-slide" sc-camel-on-click="{{ p.open }}" style="opacity:{{ p.opacity }};z-index:{{ p.z }}">
-          <img class="carousel-img" src="{{ p.src }}" alt="{{ p.alt }}" draggable="false">
+          <img class="carousel-img" src="{{ p.src }}" alt="{{ p.alt }}" draggable="false" sc-camel-on-load="{{ p.onLoad }}">
         </div>
       </sc-for>
     </div>
@@ -1000,13 +1006,13 @@ function normalize(s) {
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { step: "search", query: "", searchError: "", family: null, members: [], matches: [], message: "", now: Date.now(), musicOn: false, audioReady: false, opened: false, introDone: false, carouselIndex: 0, lightboxImage: null };
+    this.state = { step: "search", query: "", searchError: "", family: null, members: [], matches: [], message: "", now: Date.now(), musicOn: false, audioReady: false, opened: false, introDone: false, carouselIndex: 0, galleryRatio: {}, lightboxImage: null };
   }
 
   componentDidMount() {
     var self = this;
     this.timer = setInterval(function () { self.setState({ now: Date.now() }); }, 1000);
-    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-09-18.2");
+    this.audio = new Audio("./assets/audio/musica.mp3?v=2026-09-18.3");
     this.audio.loop = true;
     this.audio.volume = 0.5;
     this.audio.addEventListener("error", function () { self.setState({ audioReady: false, musicOn: false }); });
@@ -1071,6 +1077,18 @@ class Component extends DCLogic {
   // automático, que sigue corriendo aparte). onCarouselPointerMove solo
   // marca si hubo arrastre real, para no confundir un swipe con un tap
   // y abrir el lightbox por error justo después de deslizar.
+  // Guarda la relación de aspecto real de cada foto la primera vez que
+  // termina de cargar, para que el carrusel se muestre con las mismas
+  // proporciones que tiene la foto al abrirla en grande (lightbox), en
+  // vez de recortarla para llenar una caja de tamaño fijo.
+  onGalleryImgLoad(src, e) {
+    var w = e.target.naturalWidth, h = e.target.naturalHeight;
+    if (!w || !h || this.state.galleryRatio[src]) return;
+    var next = Object.assign({}, this.state.galleryRatio);
+    next[src] = w + " / " + h;
+    this.setState({ galleryRatio: next });
+  }
+
   onCarouselPointerDown(e) {
     this._swipeStartX = e.clientX;
     this._swipeMoved = false;
@@ -1173,8 +1191,12 @@ class Component extends DCLogic {
     var diff = Math.max(0, target - this.state.now);
     var pad = function (n) { return n < 10 ? "0" + n : String(n); };
 
+    var activePhoto = GALLERY_PHOTOS[this.state.carouselIndex];
+    var carouselRatio = (activePhoto && this.state.galleryRatio[activePhoto.src]) || "4 / 3";
+
     return {
       showIntro: !this.state.introDone,
+      carouselRatio: carouselRatio,
       gallerySlides: GALLERY_PHOTOS.map(function (p, i) {
         return {
           src: p.src,
@@ -1184,7 +1206,8 @@ class Component extends DCLogic {
           open: function () {
             if (self._suppressNextSlideClick) { self._suppressNextSlideClick = false; return; }
             self.openLightbox({ src: p.src, alt: p.alt });
-          }
+          },
+          onLoad: function (e) { self.onGalleryImgLoad(p.src, e); }
         };
       }),
       galleryDots: GALLERY_PHOTOS.map(function (p, i) {
